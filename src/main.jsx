@@ -7,10 +7,9 @@ import './index.css';
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-    <NextUIProvider>
-      <App />
-      <Toaster />
-     </NextUIProvider>
+        <NextUIProvider>
+            <App />
+            <Toaster />
+        </NextUIProvider>
   </React.StrictMode>
 );
-
