@@ -12,8 +12,8 @@ pipeline {
                     branches: [[name: '*/main']], 
                     extensions: [], 
                     userRemoteConfigs: [[
-                        credentialsId: 'Eissanoor-Credentials', 
-                        url: 'https://github.com/Eissanoor/QMS-V2.git'
+                        credentialsId: 'Wasim-Jenkins-Credentials', 
+                        url: 'https://github.com/Wasim-Zaman/qms-v2-frontend.git'
                     ]]
                 )
             }
