@@ -33,23 +33,21 @@ pipeline {
             }
         }
 
-        stage('Create web.config') {
+         stage('Create web.config') {
             steps {
                 script {
-                    // Escaping backslashes for Groovy
                     def webConfigContent = '''<configuration>
   <system.webServer>
     <rewrite>
       <rules>
         <rule name="React Router" stopProcessing="true">
-          <match url="^(?!.*\\.\\w{2,4}$)(.)$" />
+          <match url="^(?!.*\\.\\w{2,4}$)(.*)$" />
           <action type="Rewrite" url="/index.html" />
         </rule>
       </rules>
     </rewrite>
   </system.webServer>
-</configuration>
-'''
+</configuration>'''
 
                     writeFile(file: 'dist/web.config', text: webConfigContent)
                 }
