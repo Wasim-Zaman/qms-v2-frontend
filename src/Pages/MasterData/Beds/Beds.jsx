@@ -125,7 +125,7 @@ function Beds() {
                                     <BsThreeDotsVertical className="text-default-300" size={20} />
                                 </Button>
                             </DropdownTrigger>
-                            <DropdownMenu className="bg-slate-300 w-[120px] rounded-md shadow-lg">
+                            <DropdownMenu>
                                 <DropdownItem
                                     key="edit"
                                     className="py-1 px-3 flex items-center gap-2 hover:bg-gray-400 rounded-md transition-all duration-200"
@@ -187,11 +187,7 @@ function Beds() {
                     isCompact
                     showControls
                     showShadow
-                    classNames={{
-                        wrapper: "gap-0 overflow-visible h-8",
-                        item: "w-8 h-8 text-sm rounded-none",
-                        cursor: "bg-navy-600 text-white font-bold",
-                    }}
+                   color="secondary"
                     page={page}
                     total={pagination?.totalPages || 1}
                     onChange={setPage}
@@ -227,7 +223,7 @@ function Beds() {
               items={getallbeds}
               emptyContent="No Beds found"
               isLoading={loading}
-              loadingContent={<Spinner label="Loading..." />}
+              loadingContent={<Spinner color="secondary" size="lg" />}
             >
               {(item) => (
                 <TableRow key={item.deptcode}>

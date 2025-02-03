@@ -15,7 +15,7 @@ import {
     DropdownMenu,
     DropdownItem,
 } from "@nextui-org/react";
-import { FaSearch,  FaTrash, FaUserPlus } from "react-icons/fa";
+import { FaSearch, FaTrash, FaUserPlus } from "react-icons/fa";
 import SideNav from "../../../components/Sidebar/SideNav";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
@@ -104,10 +104,10 @@ function Users() {
         setUserAssignRoles(true);
     };
 
-     const handleAssignroleremove = (roles) => {
-       setremoveselectedUsers(roles);
-       setremoveUserAssignRoles(true);
-     };
+    const handleAssignroleremove = (roles) => {
+        setremoveselectedUsers(roles);
+        setremoveUserAssignRoles(true);
+    };
 
     const columns = [
         { name: "NAME", uid: "name" },
@@ -118,67 +118,67 @@ function Users() {
 
     const renderCell = (Roles, columnKey) => {
         switch (columnKey) {
-          case "name":
-            return <span>{Roles.name || ""}</span>;
-          case "email":
-            return <span>{Roles.email || ""}</span>;
-          case "role":
-            return (
-              <span
-                className="border-green-500 text-green-600 border rounded-lg px-3 py-1 block w-[500px] break-words" // w-72 is equivalent to 300px
-                title={
-                  Roles.roles && Roles.roles.length > 0
-                    ? Roles.roles.map((role) => role.name).join(", ")
-                    : "No Role Assigned"
-                }
-              >
-                {Roles.roles && Roles.roles.length > 0
-                  ? Roles.roles.map((role) => role.name).join(", ")
-                  : "No Role Assigned"}
-              </span>
-            );
-          case "actions":
-            return (
-              <div className="relative flex justify-center items-center">
-                <Dropdown>
-                  <DropdownTrigger>
-                    <Button isIconOnly size="sm" variant="light">
-                      <VerticalDotsIcon className="text-default-300" />
-                    </Button>
-                  </DropdownTrigger>
-                  <DropdownMenu className="bg-slate-300 w-full pe-5 rounded-md shadow-lg">
-                    <DropdownItem
-                      key="Assign"
-                      className="py-1 px-3 flex items-center gap-2 hover:bg-gray-400 rounded-md transition-all duration-200"
-                      startContent={<FaUserPlus className="text-gray-600" />}
-                      onClick={() => handleAssignrole(Roles)}
+            case "name":
+                return <span>{Roles.name || ""}</span>;
+            case "email":
+                return <span>{Roles.email || ""}</span>;
+            case "role":
+                return (
+                    <span
+                        className="border-green-500 text-green-600 border rounded-lg px-3 py-1 block w-[500px] break-words" // w-72 is equivalent to 300px
+                        title={
+                            Roles.roles && Roles.roles.length > 0
+                                ? Roles.roles.map((role) => role.name).join(", ")
+                                : "No Role Assigned"
+                        }
                     >
-                      Assign Role
-                    </DropdownItem>
-                    <DropdownItem
-                      key="Assign"
-                      className="py-1 px-3 flex items-center gap-2 hover:bg-gray-400 rounded-md transition-all duration-200"
-                      startContent={
-                        <IoPersonRemove className="text-gray-600" />
-                      }
-                      onClick={() => handleAssignroleremove(Roles)}
-                    >
-                      Remove Role
-                    </DropdownItem>
-                    <DropdownItem
-                      key="delete"
-                      className="py-1 px-3 hover:bg-gray-400 rounded-md text-red-600 transition-all duration-200"
-                      startContent={<FaTrash className="text-red-600" />}
-                      onClick={() => handleDelete(Roles)}
-                    >
-                      Delete
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              </div>
-            );
-          default:
-            return Roles[columnKey];
+                        {Roles.roles && Roles.roles.length > 0
+                            ? Roles.roles.map((role) => role.name).join(", ")
+                            : "No Role Assigned"}
+                    </span>
+                );
+            case "actions":
+                return (
+                    <div className="relative flex justify-center items-center">
+                        <Dropdown>
+                            <DropdownTrigger>
+                                <Button isIconOnly size="sm" variant="light">
+                                    <VerticalDotsIcon className="text-default-300" />
+                                </Button>
+                            </DropdownTrigger>
+                            <DropdownMenu>
+                                <DropdownItem
+                                    key="Assign"
+                                    className="py-1 px-3 flex items-center gap-2 hover:bg-gray-400 rounded-md transition-all duration-200"
+                                    startContent={<FaUserPlus className="text-gray-600" />}
+                                    onClick={() => handleAssignrole(Roles)}
+                                >
+                                    Assign Role
+                                </DropdownItem>
+                                <DropdownItem
+                                    key="Assign"
+                                    className="py-1 px-3 flex items-center gap-2 hover:bg-gray-400 rounded-md transition-all duration-200"
+                                    startContent={
+                                        <IoPersonRemove className="text-gray-600" />
+                                    }
+                                    onClick={() => handleAssignroleremove(Roles)}
+                                >
+                                    Remove Role
+                                </DropdownItem>
+                                <DropdownItem
+                                    key="delete"
+                                    className="py-1 px-3 hover:bg-gray-400 rounded-md text-red-600 transition-all duration-200"
+                                    startContent={<FaTrash className="text-red-600" />}
+                                    onClick={() => handleDelete(Roles)}
+                                >
+                                    Delete
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </div>
+                );
+            default:
+                return Roles[columnKey];
         }
     };
 
@@ -210,11 +210,7 @@ function Users() {
                     isCompact
                     showControls
                     showShadow
-                    classNames={{
-                        wrapper: "gap-0 overflow-visible h-8",
-                        item: "w-8 h-8 text-sm rounded-none",
-                        cursor: "bg-navy-600 text-white font-bold",
-                    }}
+                    color="secondary"
                     page={page}
                     total={pagination?.totalPages || 1}
                     onChange={setPage}
@@ -250,7 +246,7 @@ function Users() {
                         items={Userdata}
                         emptyContent="No Users found"
                         isLoading={loading}
-                        loadingContent={<Spinner label="Loading..." />}
+                        loadingContent={<Spinner color="secondary" size="lg" />}
                     >
                         {(item) => (
                             <TableRow key={item.id}>
@@ -270,7 +266,7 @@ function Users() {
                     selectdatauser={selectedUsers}
                 />
             )}
-             {removeUserAssignRoles && (
+            {removeUserAssignRoles && (
                 <Removeassignrole
                     isVisible={removeUserAssignRoles}
                     setVisibility={() => setremoveUserAssignRoles(false)}

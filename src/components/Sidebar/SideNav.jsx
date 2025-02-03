@@ -164,6 +164,13 @@ function SideNav({ children }) {
     }
   };
 
+ const logoutbutton = () => {
+   localStorage.removeItem("userdata");
+   localStorage.removeItem("sidebarOpen");
+   navigate("/");
+ };
+
+
   return (
     <>
       <div className="p-0 lg:h-screen">
@@ -252,7 +259,7 @@ function SideNav({ children }) {
                   ) : null
                 )}
                 <li
-                  onClick={() => navigate("/")}
+                  onClick={logoutbutton}
                   className="flex mt-10  cursor-pointer"
                 >
                   <img

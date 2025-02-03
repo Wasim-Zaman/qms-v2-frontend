@@ -8,8 +8,9 @@ import {
     TableCell,
     Input,
     Pagination,
-    Spinner,
 } from "@nextui-org/react";
+import { Spinner } from "@heroui/spinner";
+
 import { FaSearch, } from "react-icons/fa";
 import newRequest from "../../utils/newRequest";
 import SideNav from "../../components/Sidebar/SideNav";
@@ -191,7 +192,7 @@ function PatientJourney() {
             isCompact
             showControls
             showShadow
-            color="maincolor"
+            color="secondary"
             page={page}
             total={pagination?.totalPages || 1}
             onChange={setPage}
@@ -239,7 +240,7 @@ function PatientJourney() {
                         items={AllRoles}
                         emptyContent="No Patient Journey found"
                         isLoading={loading}
-                        loadingContent={<Spinner label="Loading..." />}
+                        loadingContent={ <Spinner color="secondary" size="lg" />}
                     >
                         {(item) => (
                             <TableRow key={item.patientId}>
