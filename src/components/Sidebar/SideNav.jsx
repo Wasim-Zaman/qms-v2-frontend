@@ -140,17 +140,49 @@ function SideNav({ children }) {
     },
   ];
 
+
+
+
+  const fetchUserRoles = async (userId) => {
+    if (!userId) return []; // Return empty array if user ID is missing
+
+    const response = await newRequest.get(`/api/v1/user/${userId}`);
+    return response.data?.data?.roles?.map((role) => role.name) || [];
+  };
+
+  const [userData, setUserData] = useState(null);
+   useEffect(() => {
+     const storedUserData = localStorage.getItem("userdata");
+     if (storedUserData) {
+       setUserData(JSON.parse(storedUserData)); // Store user data in state
+     }
+   }, []);
+
+
+   const {
+     isLoading,
+     data: userRoles = [],
+     error,
+   } = useQuery(
+     ["fetchAllsidebarrole", userData?.user?.id],
+     () => fetchUserRoles(userData?.user?.id)
+   );
+
+
+
+
+
   const accessuserdata = JSON.parse(localStorage.getItem("userdata"));
 
-  const { isLoading, data: userRoles = [], error } = useQuery("fetchAllsidebarrole", async () => {
-    try {
-      const response = await newRequest.get(`/api/v1/user/${accessuserdata?.user?.id || ""}`);
-      return response.data.data.roles.map((role) => role.name);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  });
+  // const { isLoading, data: userRoles = [], error } = useQuery("fetchAllsidebarrole", async () => {
+  //   try {
+  //     const response = await newRequest.get(`/api/v1/user/${accessuserdata?.user?.id || ""}`);
+  //     return response.data.data.roles.map((role) => role.name);
+  //   } catch (error) {
+  //     console.log(error);
+  //     throw error;
+  //   }
+  // });
 
   const [showPopup, setShowPopup] = useState(false);
   // Function to handle menu item clicks
