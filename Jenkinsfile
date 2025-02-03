@@ -41,7 +41,7 @@ pipeline {
     <rewrite>
       <rules>
         <rule name="React Router" stopProcessing="true">
-          <match url="^(?!.\.\w{2,4}$)(.)$" />
+          <match url="^(?!.\\.\\w{2,4}$)(.)$" />
           <action type="Rewrite" url="/index.html" />
         </rule>
       </rules>
