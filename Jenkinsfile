@@ -14,7 +14,7 @@ pipeline {
                     userRemoteConfigs: [[
                         credentialsId: 'Wasim-Jenkins-Credentials', 
                         url: 'https://github.com/Wasim-Zaman/qms-v2-frontend.git'
-                    ]]
+                    ]],
                 )
             }
         }
@@ -36,12 +36,13 @@ pipeline {
         stage('Create web.config') {
             steps {
                 script {
+                    // Escaping backslashes for Groovy
                     def webConfigContent = '''<configuration>
   <system.webServer>
     <rewrite>
       <rules>
         <rule name="React Router" stopProcessing="true">
-          <match url="^(?!.*\.\w{2,4}$)(.)$" />
+          <match url="^(?!.*\\.\\w{2,4}$)(.)$" />
           <action type="Rewrite" url="/index.html" />
         </rule>
       </rules>
