@@ -14,7 +14,7 @@ pipeline {
                     userRemoteConfigs: [[
                         credentialsId: 'Wasim-Jenkins-Credentials', 
                         url: 'https://github.com/Wasim-Zaman/qms-v2-frontend.git'
-                    ]]
+                    ]],
                 )
             }
         }
@@ -22,18 +22,18 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo "Installing dependencies for QMS V2 Frontend..."
-                bat 'npm ci' // Use 'sh' instead of 'bat' for Unix systems
+                bat 'npm ci' 
             }
         }
 
         stage('Generate Build') {
             steps {
                 echo "Generating build for QMS V2 Frontend..."
-                bat 'npm run build' // Use 'sh' instead of 'bat' for Unix systems
+                bat 'npm run build' 
             }
         }
 
-        stage('Create web.config') {
+         stage('Create web.config') {
             steps {
                 script {
                     def webConfigContent = '''<configuration>
@@ -41,7 +41,7 @@ pipeline {
     <rewrite>
       <rules>
         <rule name="React Router" stopProcessing="true">
-          <match url="^(?!.\\.\\w{2,4}$)(.)$" />
+          <match url="^(?!.*\\.\\w{2,4}$)(.*)$" />
           <action type="Rewrite" url="/index.html" />
         </rule>
       </rules>
