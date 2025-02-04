@@ -142,37 +142,25 @@ function SideNav({ children }) {
 
 
 
+  const [userData, setUserData] = useState(null);
 
-  const fetchUserRoles = async (userId) => {
-    if (!userId) return []; // Return empty array if user ID is missing
+  const { data: userRoles = [] } = useQuery(["fetchAllsidebarrole", userData?.user?.id,fetchUserRoles], () =>
+    fetchUserRoles(userData?.user?.id)
+  );
 
+  const accessuserdata = JSON.parse(localStorage.getItem("userdata"));
+  useEffect(() => {
+    const storedUserData = localStorage.getItem("userdata");
+    if (storedUserData) {
+      setUserData(JSON.parse(storedUserData));
+    }
+  }, [accessuserdata, userData, userRoles]);
+
+
+  async function fetchUserRoles(userId) {
     const response = await newRequest.get(`/api/v1/user/${userId}`);
     return response.data?.data?.roles?.map((role) => role.name) || [];
   };
-
-  const [userData, setUserData] = useState(null);
-   useEffect(() => {
-     const storedUserData = localStorage.getItem("userdata");
-     if (storedUserData) {
-       setUserData(JSON.parse(storedUserData)); // Store user data in state
-     }
-   }, []);
-
-
-   const {
-     isLoading,
-     data: userRoles = [],
-     error,
-   } = useQuery(
-     ["fetchAllsidebarrole", userData?.user?.id],
-     () => fetchUserRoles(userData?.user?.id)
-   );
-
-
-
-
-
-  const accessuserdata = JSON.parse(localStorage.getItem("userdata"));
 
   // const { isLoading, data: userRoles = [], error } = useQuery("fetchAllsidebarrole", async () => {
   //   try {
@@ -196,11 +184,11 @@ function SideNav({ children }) {
     }
   };
 
- const logoutbutton = () => {
-   localStorage.removeItem("userdata");
-   localStorage.removeItem("sidebarOpen");
-   navigate("/");
- };
+  const logoutbutton = () => {
+    localStorage.removeItem("userdata");
+    localStorage.removeItem("sidebarOpen");
+    navigate("/");
+  };
 
 
   return (
@@ -237,8 +225,8 @@ function SideNav({ children }) {
                       <div
                         // className="flex px-3 cursor-pointer my-2"
                         className={`flex items-center py-1 rounded transition-all duration-300 relative group cursor-pointer ${activeTab === item.path
-                            ? "bg-[#13BA8885] text-black"
-                            : "hover:bg-gray-100 text-gray-700"
+                          ? "bg-[#13BA8885] text-black"
+                          : "hover:bg-gray-100 text-gray-700"
                           } ${i18n.language === "ar"
                             ? "pr-3 pl-4 justify-end"
                             : "pl-3 pr-4 justify-start"
@@ -255,8 +243,8 @@ function SideNav({ children }) {
                         {item.subItems && (
                           <div
                             className={`${i18n.language === "ar"
-                                ? "mr-auto ml-2"
-                                : "ml-auto mr-2"
+                              ? "mr-auto ml-2"
+                              : "ml-auto mr-2"
                               }`}
                           >
                             {Masterdatashow ? (
