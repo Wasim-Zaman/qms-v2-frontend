@@ -213,6 +213,8 @@ const WaitingArea = () => {
                     {t("Patient Name")}
                   </label>
                   <input
+                  //disable this input not changible
+                  disabled
                     type="text"
                     value={PatientName}
                     onChange={(e) => setPatientName(e.target.value)}
@@ -225,6 +227,7 @@ const WaitingArea = () => {
                     {t("Mobile Number")}
                   </label>
                   <input
+                  disabled
                     type="text"
                     value={MobileNumber}
                     readOnly
@@ -236,6 +239,7 @@ const WaitingArea = () => {
                     {t("ID Number")}
                   </label>
                   <input
+                  disabled
                     type="text"
                     value={IDNumber}
                     onChange={(e) => setIDNumber(e.target.value)}
@@ -248,6 +252,7 @@ const WaitingArea = () => {
                     {t("Nationality")}
                   </label>
                   <input
+                  disabled
                     type="text"
                     value={Nationality}
                     readOnly
@@ -259,6 +264,7 @@ const WaitingArea = () => {
                     {t("Age")}
                   </label>
                   <input
+                  disabled
                     type="text"
                     value={Age}
                     onChange={(e) => setAge(e.target.value)}
@@ -271,6 +277,7 @@ const WaitingArea = () => {
                     {t("Gender")}
                   </label>
                   <input
+                  disabled
                     type="text"
                     value={Sex}
                     readOnly
@@ -282,6 +289,7 @@ const WaitingArea = () => {
                     {t("Blood Group")}
                   </label>
                   <input
+                  disabled
                     type="text"
                     value={bloodGroup}
                     readOnly
@@ -293,6 +301,7 @@ const WaitingArea = () => {
                     {t("Birth Date")}
                   </label>
                   <input
+                  disabled
                     type="text"
                     value={birthDate}
                     readOnly
@@ -304,6 +313,7 @@ const WaitingArea = () => {
                     {t("MRN Number")}
                   </label>
                   <input
+                  disabled
                     type="text"
                     value={mrnNumber}
                     readOnly
@@ -315,6 +325,7 @@ const WaitingArea = () => {
                     {t("Chief Complaint")}
                   </label>
                   <input
+                  disabled
                     type="text"
                     value={ChiefComplaint}
                     onChange={(e) => setChiefComplaint(e.target.value)}
@@ -382,13 +393,7 @@ const WaitingArea = () => {
                     />
                     <span className="ml-2 text-sm">{t("No")}</span>
                   </label>
-                  {Allergies === "Yes" && (
-                    <input
-                      type="text"
-                      placeholder={t("Specify")}
-                      className="p-2 border border-gray-300 rounded-lg"
-                    />
-                  )}
+                 
                 </div>
               </div>
               <div className="mt-6 flex items-center space-x-4">
@@ -419,26 +424,7 @@ const WaitingArea = () => {
               
 
               <div className="flex space-x-4">
-              <div className="flex space-x-3">
-                <button 
-                  className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600"
-                  onClick={() => {
-                    setDischargeType('LAMA');
-                    setShowDischargePopup(true);
-                  }}
-                >
-                  LAMA
-                </button>
-                <button 
-                  className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600"
-                  onClick={() => {
-                    setDischargeType('DAMA');
-                    setShowDischargePopup(true);
-                  }}
-                >
-                  DAMA
-                </button>
-              </div>
+              
                 <button
                   className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600"
                   onClick={openBandPopup}
@@ -469,16 +455,14 @@ const WaitingArea = () => {
                 >
                   {t("Re-Print")}
                 </button>
-
-                <button className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600">
+                <button
+                  className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600"
+                  onClick={() => {/* Add Void handler */}}
+                >
                   {t("Void")}
                 </button>
-                <button className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600"
-                onClick={() => {
-                  navigate(`/patient-table`);
-                }}>
-                  {t("Close")}
-                </button>
+              
+                
               </div>
             </div>
           </div>
