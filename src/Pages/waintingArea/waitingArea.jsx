@@ -190,6 +190,18 @@ const WaitingArea = () => {
     }
   };
 
+  const handleVoid = async () => {
+    try {
+      const response = await newRequest.patch(`/api/v1/patients/${id}/void`);
+      if (response.status >= 200) {
+        toast.success("Patient voided successfully");
+        navigate("/monitoring"); // Navigate to monitoring screen
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to void patient");
+    }
+  };
+
   return (
     <div className="bg-gray-100">
       <SideNav>
@@ -457,7 +469,7 @@ const WaitingArea = () => {
                 </button>
                 <button
                   className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600"
-                  onClick={() => {/* Add Void handler */}}
+                  onClick={handleVoid}
                 >
                   {t("Void")}
                 </button>
