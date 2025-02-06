@@ -376,7 +376,7 @@ const PatientInformation = () => {
                     id="status"
                     className="w-full mt-2 p-3 border border-green-400 rounded-lg focus:ring-2 focus:ring-green-300"
                   >
-                    <option>{t("Select Status")}</option>
+                    
                     <option value="Non-urgent">{t("Non-urgent")}</option>
                     <option value="Urgent">{t("Urgent")}</option>
                     <option value="Critical">{t("Critical")}</option>
