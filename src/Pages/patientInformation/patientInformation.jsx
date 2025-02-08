@@ -453,7 +453,7 @@ const PatientInformation = () => {
                   <textarea
                     id="cheifComplaint"
                     rows="4"
-                    value={cheifComplaint}
+                    
                     onChange={(e) => setcheifComplaint(e.target.value)}
                     placeholder={t("Describe the complaint")}
                     className="w-full mt-2 p-3 border border-green-400 rounded-lg focus:ring-2 focus:ring-green-300"
