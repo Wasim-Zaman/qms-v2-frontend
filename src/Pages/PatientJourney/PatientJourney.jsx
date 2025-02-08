@@ -8,10 +8,11 @@ import {
     TableCell,
     Input,
     Pagination,
+    Button,
 } from "@nextui-org/react";
 import { Spinner } from "@heroui/spinner";
 
-import { FaSearch, } from "react-icons/fa";
+import { FaSearch, FaFileExcel } from "react-icons/fa";
 import newRequest from "../../utils/newRequest";
 import SideNav from "../../components/Sidebar/SideNav";
 import PickerFilter from "./PickerFilter";
@@ -172,13 +173,16 @@ function PatientJourney() {
                         currentSortOrder={sortOrder}
                     />
 
-                    {/* <Button
-            className="bg-navy-600 border border-green-700 outline-none bg-transparent hover:bg-green-700 text-green-700 hover:text-white transition-all duration-300 rounded-lg py-2"
-            startContent={<FaPlus />}
-            onClick={() => setisAddRolesModalOpen(true)}
-          >
-            Add New Role
-          </Button> */}
+                    <Button
+                        className="bg-navy-600 border border-green-700 outline-none bg-transparent hover:bg-green-700 text-green-700 hover:text-white transition-all duration-300 rounded-lg py-2 ms-2"
+                        startContent={<FaFileExcel />}
+                        onClick={() => {
+                            // Add your export logic here
+                            console.log("Export to Excel clicked");
+                        }}
+                    >
+                        Export to Excel
+                    </Button>
                 </div>
             </div>
         ),
