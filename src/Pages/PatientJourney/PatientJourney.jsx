@@ -32,7 +32,6 @@ function PatientJourney() {
     const fetchAllRoles = async () => {
         setLoading(true);
         try {
-            // Clean filters object to remove empty values
             const cleanFilters = Object.entries(filters).reduce((acc, [key, value]) => {
                 if (value !== "" && value !== null && value !== undefined) {
                     acc[key] = value;
@@ -45,7 +44,8 @@ function PatientJourney() {
                     page,
                     sortBy, 
                     order: sortOrder,
-                    ...cleanFilters  // Only include filters with values
+                    ...cleanFilters,
+                    search: search || undefined  // Add search parameter
                 },
             });
             setAllRoles(response?.data?.data?.data || []);
@@ -59,7 +59,7 @@ function PatientJourney() {
 
     useEffect(() => {
         fetchAllRoles();
-    }, [page, sortBy, sortOrder, filters]);
+    }, [page, sortBy, sortOrder, filters, search]);
 
     const formatDateTime = (dateTime) => {
         if (!dateTime) return ""; // Handle empty values
@@ -147,7 +147,10 @@ function PatientJourney() {
                     <Input
                         isClearable
                         value={search}
-                        onValueChange={setSearch}
+                        onValueChange={(value) => {
+                            setSearch(value);
+                            setPage(1); // Reset to first page when searching
+                        }}
                         className="w-full sm:max-w-[44%] border-green-700 border py-1 rounded-lg focus:outline-none"
                         placeholder="Search by patient name or MRN ..."
                         startContent={<FaSearch className="text-default-300 me-2" />}
