@@ -9,6 +9,8 @@ const Departmentmonitoring = () => {
     const [inProgressPatients, setInProgressPatients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showCalledPatients, setShowCalledPatients] = useState(false);
+    const [calledPatients, setCalledPatients] = useState([]);
     const navigate = useNavigate();
 
     const { id } = useParams();
@@ -32,6 +34,19 @@ const Departmentmonitoring = () => {
       fetchPatients();
     }, [id]);
 
+    const fetchCalledPatients = async () => {
+        try {
+            setLoading(true);
+            const response = await newRequest.get('api/v1/patients/called');
+            setCalledPatients(response.data.data || []);
+            setShowCalledPatients(true);
+        } catch (err) {
+            setError("Error fetching called patients: " + err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <>
             <SideNav>
@@ -45,7 +60,10 @@ const Departmentmonitoring = () => {
                                 placeholder="Scan the Barcode"
                                 className="p-2 rounded-lg text-black w-80"
                             />
-                            <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                            <button 
+                                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                                onClick={fetchCalledPatients}
+                            >
                                 Called Patients List
                             </button>
                         </div>
@@ -53,6 +71,40 @@ const Departmentmonitoring = () => {
 
                     {/* Loading Spinner */}
                     {loading && <Spinner />}
+
+                    {/* Called Patients Modal */}
+                    {showCalledPatients && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                            <div className="bg-white p-6 rounded-lg w-3/4 max-h-[80vh] overflow-y-auto">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h2 className="text-xl font-bold text-blue-700">Called Patients List</h2>
+                                    <button 
+                                        onClick={() => setShowCalledPatients(false)}
+                                        className="text-gray-500 hover:text-gray-700"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                                    {calledPatients.map((patient) => (
+                                        <div
+                                            key={patient.id}
+                                            className="bg-blue-100 border-l-4 border-blue-500 rounded-lg p-4 text-center cursor-pointer"
+                                            onClick={() => window.open(`/Servings/${patient.id}`, '_blank')}
+                                        >
+                                            <strong className="text-gray-700 mt-2">
+                                                {patient.department?.deptname ?? "TR"}
+                                            </strong>
+                                            <h3 className="text-blue-600 font-bold">
+                                                {patient.ticketNumber}
+                                            </h3>
+                                            <p className="text-black-700 mt-2">{patient.name}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Waiting Patients Section */}
                     <div className="mt-6 bg-white p-4 rounded-lg shadow-md">

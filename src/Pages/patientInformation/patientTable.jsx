@@ -100,35 +100,35 @@ function PatientTable() {
               </div>
             </div>
 
-            <div className="max-h-[500px] sm:max-h-[300px] md:max-h-[450px] lg:max-h-[500px] overflow-y-scroll border border-gray-300 rounded-md mt-4">
-              <table className="min-w-full bg-white  overflow-y-scroll">
-                <thead className="whitespace-nowrap">
+            <div className="max-h-[500px] sm:max-h-[300px] md:max-h-[450px] lg:max-h-[500px] overflow-y-scroll border border-gray-300 rounded-lg shadow-lg">
+              <table className="min-w-full bg-white divide-y divide-gray-200">
+                <thead className="bg-green-300 sticky top-0">
                   <tr>
-                    <th className="pl-4 w-8"> {/* Checkbox Header */} </th>
-                    <th className="p-4 text-left text-sm font-semibold text-gray-800">
+                    <th className="pl-4 w-8 py-3"> {/* Checkbox Header */} </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Name
                     </th>
-                    <th className="p-4 text-left text-sm font-semibold text-gray-800">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="p-4 text-left text-sm font-semibold text-gray-800">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Age
                     </th>
-                    <th className="p-4 text-left text-sm font-semibold text-gray-800">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Contact
                     </th>
-                    <th className="p-4 text-left text-sm font-semibold text-gray-800">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       ID Number
                     </th>
-                    <th className="p-4 text-left text-sm font-semibold text-gray-800">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       PDF
                     </th>
-                    <th className="p-4 text-center text-sm font-semibold text-gray-800">
+                    <th className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Action
                     </th>
                   </tr>
                 </thead>
-                <tbody className="whitespace-nowrap">
+                <tbody className="bg-white divide-y divide-gray-200">
                   {loading ? (
                     <Spinner />
                   ) : (
@@ -147,12 +147,12 @@ function PatientTable() {
                       .map((patient) => (
                         <tr
                           key={patient.id}
-                          className={`odd:bg-blue-50 ${
-                            selectedPatientId === patient.id ? "bg-white" : ""
+                          className={`hover:bg-gray-50 transition-colors duration-200 ${
+                            selectedPatientId === patient.id ? "bg-blue-50" : ""
                           }`}
                           onClick={() => setSelectedPatientId(patient.id)}
                         >
-                          <td className="pl-4 w-8">
+                          <td className="pl-4 w-8 py-4">
                             <input
                               id={`checkbox-${patient.id}`}
                               type="checkbox"
@@ -167,33 +167,33 @@ function PatientTable() {
                               )}
                             </label>
                           </td>
-                          <td className="p-4 text-sm text-gray-800">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {patient.name}
                           </td>
-                          <td className="p-4 text-sm text-gray-800">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <span
-                              className={`w-[68px] block text-center py-1 border ${
+                              className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                                 patient.status === "Active"
-                                  ? "border-green-500 text-green-600"
-                                  : "border-yellow-500 text-yellow-600"
-                              } rounded text-xs`}
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-yellow-100 text-yellow-800"
+                              }`}
                             >
                               {patient.status}
                             </span>
                           </td>
-                          <td className="p-4 text-sm text-gray-800">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                             {patient.age}
                           </td>
-                          <td className="p-4 text-sm text-gray-800">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                             {patient.mobileNumber}
                           </td>
-                          <td className="p-4 text-sm text-gray-800">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                             {patient.idNumber}
                           </td>
-                          <td className="p-4 text-gray-800">
+                          <td className="px-6 py-4 whitespace-nowrap">
                             <FaFilePdf
-                              size={30}
-                              className="cursor-pointer"
+                              size={24}
+                              className="text-red-500 hover:text-red-600 transition-colors duration-200 cursor-pointer"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 const fileUrl = baseUrl + "/" + patient.ticket;
@@ -201,8 +201,7 @@ function PatientTable() {
                               }}
                             />
                           </td>
-
-                          <td className="relative text-center">
+                          <td className="px-6 py-4 whitespace-nowrap text-center relative">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
