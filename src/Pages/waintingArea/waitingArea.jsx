@@ -567,7 +567,7 @@ const WaitingArea = () => {
                     MRN Number: {IDNumber}
                   </p>
                   <p style={{ fontSize: "14px" }} className="text-start DOG">
-                    Date of Birth: {Age}
+                    Date of Birth: {birthDate}
                   </p>
                   <p style={{ fontSize: "14px" }} className="text-start DOG">
                     Blood Type: {bloodGroup}
