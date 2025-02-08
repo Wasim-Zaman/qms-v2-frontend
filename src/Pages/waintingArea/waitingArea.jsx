@@ -142,7 +142,7 @@ const WaitingArea = () => {
     setCallPatient(newCallPatientStatus);
 
     try {
-      const response = await fetch(`${baseUrl}/api/v1/patients/${id}/toggle-call?call=first`, {
+      const response = await fetch(`${baseUrl}/api/v2/patients/${id}/toggle-call?call=first`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ const WaitingArea = () => {
   const handleDischarge = async () => {
     try {
       const response = await newRequest.patch(
-        `/api/v1/patients/${id}/discharge`,
+        `/api/v2/patients/${id}/discharge`,
         { remarks }
       );
       
@@ -192,7 +192,7 @@ const WaitingArea = () => {
 
   const handleVoid = async () => {
     try {
-      const response = await newRequest.patch(`/api/v1/patients/${id}/void`);
+      const response = await newRequest.patch(`/api/v2/patients/${id}/void`);
       if (response.status >= 200) {
         toast.success("Patient voided successfully");
         navigate("/monitoring"); // Navigate to monitoring screen

@@ -40,7 +40,7 @@ function PatientJourney() {
                 return acc;
             }, {});
 
-            const response = await newRequest.get("/api/v1/patients/journeys", {
+            const response = await newRequest.get("/api/v2/patients/journeys", {
                 params: { 
                     page,
                     sortBy, 

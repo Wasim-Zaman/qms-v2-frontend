@@ -20,7 +20,7 @@ const AssignPopup = ({ onClose, patientId, onAssignSuccess }) => {
         setLoading(true);
         try {
             const response = await newRequest.patch(
-                `/api/v1/patients/${patientId}/assign-department`,
+                `/api/v2/patients/${patientId}/assign-department`,
                 { departmentId: selectedDeptId }
             );
             toast.success(

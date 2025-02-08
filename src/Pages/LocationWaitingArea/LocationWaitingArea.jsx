@@ -82,7 +82,7 @@ const LocationWaitingArea = () => {
       console.log("Response Status1:");
         
         try {
-            const response = await fetch(`${baseUrl}/api/v1/patients/${id}/begin-time`, {
+            const response = await fetch(`${baseUrl}/api/v2/patients/${id}/begin-time`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

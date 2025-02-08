@@ -154,7 +154,7 @@ const Servingss = () => {
 
     try {
       const response = await newRequest.post(
-        `${baseUrl}/api/v1/patients/${patientId}/vital-sign`,
+        `${baseUrl}/api/v2/patients/${patientId}/vital-sign`,
         body,
         {
           headers: {
@@ -185,7 +185,7 @@ const Servingss = () => {
 
     try {
       const response = await fetch(
-        `${baseUrl}/api/v1/patients/${id}/toggle-call?call=second`,
+        `${baseUrl}/api/v2/patients/${id}/toggle-call?call=second`,
         {
           method: "PATCH",
           headers: {
@@ -251,7 +251,7 @@ const Servingss = () => {
     setloadingbegintime(true);
     try {
       const response = await newRequest.patch(
-        `/api/v1/patients/${id}/begin-time`
+        `/api/v2/patients/${id}/begin-time`
       );
       const data = response;
       if (response.status == 200) {
@@ -276,7 +276,7 @@ const Servingss = () => {
       setloadingendtime(true);
       try {
         const response = await newRequest.patch(
-          `/api/v1/patients/${id}/end-time`
+          `/api/v2/patients/${id}/end-time`
         );
         const data = response;
         if (response.status == 200) {
@@ -301,7 +301,7 @@ const Servingss = () => {
   const handleDischarge = async () => {
     try {
       const response = await newRequest.patch(
-        `/api/v1/patients/${id}/discharge`,
+        `/api/v2/patients/${id}/discharge`,
         { remarks }
       );
       
