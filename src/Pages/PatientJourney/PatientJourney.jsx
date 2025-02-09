@@ -1,22 +1,48 @@
 import React, { useState, useEffect, useMemo } from "react";
 import {
-    Table,
-    TableHeader,
-    TableColumn,
-    TableBody,
-    TableRow,
-    TableCell,
-    Input,
-    Pagination,
-    Button,
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  Input,
+  Pagination,
+  Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@nextui-org/react";
 import { Spinner } from "@heroui/spinner";
-
-import { FaSearch, FaFileExcel } from "react-icons/fa";
+import { BiSolidUserDetail } from "react-icons/bi";
+import { FaSearch, FaFileExcel, } from "react-icons/fa";
 import newRequest from "../../utils/newRequest";
 import SideNav from "../../components/Sidebar/SideNav";
 import PickerFilter from "./PickerFilter";
 import PickerSort from "./PickerSort";
+import PatientJourneyDetails from "./PatientJourneyDetails"
+
+
+export const VerticalDotsIcon = ({ size = 24, width, height, ...props }) => {
+    return (
+        <svg
+            aria-hidden="true"
+            fill="none"
+            focusable="false"
+            height={size || height}
+            role="presentation"
+            viewBox="0 0 24 24"
+            width={size || width}
+            {...props}
+        >
+            <path
+                d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+                fill="currentColor"
+            />
+        </svg>
+    );
+};
 
 function PatientJourney() {
     const [AllRoles, setAllRoles] = useState([]);
@@ -24,11 +50,17 @@ function PatientJourney() {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
-
     const [sortBy, setSortBy] = useState("createdAt");
     const [sortOrder, setSortOrder] = useState("desc");
-
     const [filters, setFilters] = useState({});
+    const [Detailspatient, setDetailspatient] = useState(false);
+    
+    const [selectedData, setselectedData] = useState(null);
+
+        const handledetaild = (Roless) => {
+            setselectedData(Roless);
+          setDetailspatient(true);
+        };
 
     const fetchAllRoles = async () => {
         setLoading(true);
@@ -88,16 +120,14 @@ function PatientJourney() {
     };
 
     const columns = [
-        { name: "Name", uid: "name", sortable: true },
-        { name: "MRN Number", uid: "mrnNumber", sortable: true },
-        { name: "Registration", uid: "registration", sortable: true },
-        { name: "Triage", uid: "firstCall", sortable: true },
-        { name: "Dept. Call", uid: "secondCall", sortable: true },
-        { name: "Vital Signs", uid: "vitalSigns" },
-        { name: "Department Assigned", uid: "departmentAssigned", sortable: true },
-        { name: "Treatment Began", uid: "treatmentBegan", sortable: true },
-        { name: "Treatment Ended", uid: "treatmentEnded", sortable: true },
-        { name: "Total Hrs", uid: "totalHrs", sortable: false },
+      { name: "Name", uid: "name", sortable: true },
+      { name: "MRN Number", uid: "mrnNumber", sortable: true },
+      { name: "mobile Number", uid: "mobileNumber", sortable: true },
+      { name: "Gender", uid: "sex", sortable: true },
+      { name: "Blood Group", uid: "bloodGroup", sortable: true },
+      { name: "Bed", uid: "bed" },
+      { name: "status", uid: "status", sortable: true },
+      { name: "ACTIONS", uid: "actions" },
     ];
 
     const renderCell = (Roless, columnKey) => {
@@ -106,35 +136,50 @@ function PatientJourney() {
                 return <span>{Roless?.name || ""}</span>;
             case "mrnNumber":
                 return <span>{Roless?.mrnNumber || ""}</span>;
-            case "registration":
+            case "mobileNumber":
+                return <span>{Roless?.mobileNumber || ""}</span>;
+            case "sex":
+                return <span>{Roless?.sex || ""}</span>;
+            case "bloodGroup":
+                return <span>{Roless?.bloodGroup || ""}</span>;
+            case "bed":
+                return <span>{Roless?.bed || ""}</span>;
+            case "status":
                 return (
-                    <span>{formatDateTime(Roless?.journey?.registration) || ""}</span>
+                  <span
+                    className={`border rounded-lg px-3 py-1 ${
+                      Roless?.status === "Urgent"
+                        ? "border-[#FF0000] text-[#FF0000]" // Red for Non-urgent
+                        : Roless?.status === "Critical"
+                        ? "border-[#FF5722] text-[#FF5722]" // Orange for Critical
+                        : "border-[#4CAF50] text-[#4CAF50]" // Green for Urgent (default)
+                    }`}
+                  >
+                    {Roless?.status || ""}
+                  </span>
                 );
-            case "firstCall":
-                return <span>{formatDateTime(Roless?.journey?.firstCall) || ""}</span>;
-            case "secondCall":
-                return <span>{formatDateTime(Roless?.journey?.secondCall) || ""}</span>;
-            case "vitalSigns":
-                return <span>{formatDateTime(Roless?.journey?.vitalSigns) || ""}</span>;
-            case "departmentAssigned":
+             case "actions":
                 return (
-                    <span>
-                        {formatDateTime(Roless?.journey?.departmentAssigned) || ""}
-                    </span>
-                );
-            case "treatmentBegan":
-                return (
-                    <span>{formatDateTime(Roless?.journey?.treatmentBegan) || ""}</span>
-                );
-            case "treatmentEnded":
-                return (
-                    <span>{formatDateTime(Roless?.journey?.treatmentEnded) || ""}</span>
-                );
-            case "totalHrs":
-                return (
-                    <span>
-                        {calculateTotalHours(Roless?.journey?.treatmentEnded, Roless?.journey?.registration) || ""}
-                    </span>
+                    <div className="relative flex justify-center items-center">
+                        <Dropdown>
+                            <DropdownTrigger>
+                                <Button isIconOnly size="sm" variant="light">
+                                    <VerticalDotsIcon className="text-default-300" />
+                                </Button>
+                            </DropdownTrigger>
+                            <DropdownMenu>
+                                <DropdownItem
+                                    key="edit"
+                                    className="py-1 px-3 flex items-center gap-2 hover:bg-gray-400 rounded-md transition-all duration-200"
+                                    startContent={<BiSolidUserDetail  className="text-gray-600" size={24}/>}
+                                    onClick={() => handledetaild(Roless)}
+                                >
+                                    Details
+                                </DropdownItem>
+                              
+                            </DropdownMenu>
+                        </Dropdown>
+                    </div>
                 );
             default:
                 return PatientJourney[columnKey];
@@ -217,49 +262,56 @@ function PatientJourney() {
     };
 
     return (
-        <SideNav>
-            <div className="p-6 bg-blue-50 min-h-screen">
-                <Table
-                    aria-label="Patient Journey"
-                    bottomContent={bottomContent}
-                    topContent={topContent}
-                    classNames={{
-                        wrapper: "shadow-md rounded-lg bg-white mt-6 w-full ",
-                    }}
-                    sortDescriptor={{
-                        column: sortBy,
-                        direction: sortOrder === "asc" ? "ascending" : "descending",
-                    }}
-                    onSortChange={handleColumnSort}
+      <SideNav>
+        <div className="p-6 bg-blue-50 min-h-screen">
+          <Table
+            aria-label="Patient Journey"
+            bottomContent={bottomContent}
+            topContent={topContent}
+            classNames={{
+              wrapper: "shadow-md rounded-lg bg-white mt-6 w-full ",
+            }}
+            sortDescriptor={{
+              column: sortBy,
+              direction: sortOrder === "asc" ? "ascending" : "descending",
+            }}
+            onSortChange={handleColumnSort}
+          >
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn
+                  key={column.uid}
+                  align={column.uid === "actions" ? "center" : "start"}
+                  className="bg-gray-50 text-gray-600"
                 >
-                    <TableHeader columns={columns}>
-                        {(column) => (
-                            <TableColumn
-                                key={column.uid}
-                                align={column.uid === "actions" ? "center" : "start"}
-                                className="bg-gray-50 text-gray-600"
-                            >
-                                {column.name}
-                            </TableColumn>
-                        )}
-                    </TableHeader>
-                    <TableBody
-                        items={AllRoles}
-                        emptyContent="No Patient Journey found"
-                        isLoading={loading}
-                        loadingContent={ <Spinner color="secondary" size="lg" />}
-                    >
-                        {(item) => (
-                            <TableRow key={item.patientId}>
-                                {(columnKey) => (
-                                    <TableCell>{renderCell(item, columnKey)}</TableCell>
-                                )}
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
-        </SideNav>
+                  {column.name}
+                </TableColumn>
+              )}
+            </TableHeader>
+            <TableBody
+              items={AllRoles}
+              emptyContent="No Patient Journey found"
+              isLoading={loading}
+              loadingContent={<Spinner color="secondary" size="lg" />}
+            >
+              {(item) => (
+                <TableRow key={item.patientId}>
+                  {(columnKey) => (
+                    <TableCell>{renderCell(item, columnKey)}</TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        {Detailspatient && (
+          <PatientJourneyDetails
+            isVisible={Detailspatient}
+            setVisibility={() => setDetailspatient(false)}
+            selectdataPatientJourney={selectedData}
+          />
+        )}
+      </SideNav>
     );
 }
 

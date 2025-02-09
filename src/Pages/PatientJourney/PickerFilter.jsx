@@ -173,7 +173,7 @@ function PickerFilter({ onFilterChange }) {
 
                   {/* Sex and Department */}
                   <Select
-                    label="Sex"
+                    label="Gender"
                     value={localFilters.sex}
                     onChange={(e) => handleFilterChange("sex", e.target.value)}
                     className="w-full"

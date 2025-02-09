@@ -141,39 +141,43 @@ function SideNav({ children }) {
   ];
 
 
+   const [userData, setUserData] = useState(() => {
+     const storedUserData = localStorage.getItem("userdata");
+     return storedUserData ? JSON.parse(storedUserData) : null;
+   });
 
-  const [userData, setUserData] = useState(null);
+const {
+  data: userRoles = [],
+} = useQuery(
+  ["userRoles", userData?.user?.id],
+  () => fetchUserRoles(userData?.user?.id),
+  {
+    enabled: !!userData?.user?.id,
+  }
+);
 
-  const { data: userRoles = [] } = useQuery(["fetchAllsidebarrole", userData?.user?.id,fetchUserRoles], () =>
-    fetchUserRoles(userData?.user?.id)
-  );
-
-  const accessuserdata = JSON.parse(localStorage.getItem("userdata"));
-  useEffect(() => {
-    const storedUserData = localStorage.getItem("userdata");
-    if (storedUserData) {
-      setUserData(JSON.parse(storedUserData));
+  const fetchUserRoles = async (userId) => {
+    if (!userId) return [];
+    try {
+      const response = await newRequest.get(`/api/v1/user/${userId}`);
+      return response.data?.data?.roles?.map((role) => role.name) || [];
+    } catch (error) {
+      return [];
     }
-  }, [accessuserdata, userData, userRoles]);
-
-
-  async function fetchUserRoles(userId) {
-    const response = await newRequest.get(`/api/v1/user/${userId}`);
-    return response.data?.data?.roles?.map((role) => role.name) || [];
   };
 
-  // const { isLoading, data: userRoles = [], error } = useQuery("fetchAllsidebarrole", async () => {
-  //   try {
-  //     const response = await newRequest.get(`/api/v1/user/${accessuserdata?.user?.id || ""}`);
-  //     return response.data.data.roles.map((role) => role.name);
-  //   } catch (error) {
-  //     console.log(error);
-  //     throw error;
-  //   }
-  // });
+   useEffect(() => {
+     const handleStorageChange = (e) => {
+       if (e.key === "userdata") {
+         setUserData(e.newValue ? JSON.parse(e.newValue) : null);
+       }
+     };
+
+     window.addEventListener("storage", handleStorageChange);
+     return () => window.removeEventListener("storage", handleStorageChange);
+   }, []);
 
   const [showPopup, setShowPopup] = useState(false);
-  // Function to handle menu item clicks
   const handleItemClick = (item) => {
     if (item.label === t("Department Waiting List")) {
       setShowPopup(true);
@@ -295,178 +299,6 @@ function SideNav({ children }) {
                   </span>
                 </li>
               </ul>
-              {/* <ul className="p-4 space-y-4"> */}
-              {/* <li
-                  onClick={() => navigate("/patient-table")}
-                  className={getTabClass("/patient-table")}
-                >
-                  <img
-                    src={Registration}
-                    alt="Registered Patients"
-                    className="w-6 h-6"
-                  />
-                  <span
-                    className={`font-medium text-gray-700 whitespace-nowrap transition-all duration-300 ms-3 ${!isOpen && "opacity-0 w-0 overflow-hidden"
-                      }`}
-                  >
-                    {t("Registered Patients")}
-                  </span>
-                </li>
-                <li
-                  onClick={() => navigate("/monitoring")}
-                  className={getTabClass("/monitoring")}
-                >
-                  <img
-                    src={CentralWaitingArea}
-                    alt="Triage Waiting List"
-                    className="w-6 h-6"
-                  />
-                  <span
-                    className={`font-medium text-gray-700 whitespace-nowrap transition-all duration-300 ms-3 ${!isOpen && "opacity-0 w-0 overflow-hidden"
-                      }`}
-                  >
-                    {t("Triage Waiting List")}
-                  </span>
-                </li> */}
-              {/* <li
-                  onClick={() => navigate("/location-assignment")}
-                  className={getTabClass("/location-assignment")}
-                >
-                  <img
-                    src={LocationAssignment}
-                    alt="Location Assignment"
-                    className="w-6 h-6"
-                  />
-                  <span
-                    className={`font-medium text-gray-700 whitespace-nowrap transition-all duration-300 ms-3 ${!isOpen && "opacity-0 w-0 overflow-hidden"
-                      }`}
-                  >
-                    {t("Department Waiting List")}
-                  </span>
-                </li> */}
-              {/* <div
-                  className="flex px-3 cursor-pointer"
-                  onClick={() => setMasterdatashow(!Masterdatashow)}
-                >
-                  <img
-                    src={MasterData}
-                    alt="Location Waiting Area"
-                    className="w-6 h-6"
-                  />
-                  <span
-                    className={`font-medium text-gray-700 whitespace-nowrap transition-all duration-300 ms-3 ${!isOpen && "opacity-0 w-0 overflow-hidden"
-                      }`}
-                  >
-                    {t("MasterData")}
-                  </span>
-                  <div
-                    className={`${i18n.language === "ar" ? "mr-auto ml-2" : "ml-auto mr-2"
-                      }`}
-                  >
-                    {Masterdatashow ? (
-                      <i className="fas fa-solid fa-chevron-up"></i>
-                    ) : (
-                      <i className="fas fa-solid fa-chevron-down"></i>
-                    )}
-                  </div>
-                </div>
-                {Masterdatashow && (
-                  <ul className="ms-3 space-y-3">
-                    <li
-                      onClick={() => navigate("/location")}
-                      className={getTabClass("/location")}
-                    >
-                      <img src={Location} alt="Location" className="w-6 h-6" />
-                      <span
-                        className={`font-medium text-gray-700 whitespace-nowrap transition-all duration-300 ms-3 ${!isOpen && "opacity-0 w-0 overflow-hidden"
-                          }`}
-                      >
-                        {t("Location")}
-                      </span>
-                    </li>
-                    <li
-                      onClick={() => navigate("/users")}
-                      className={getTabClass("/users")}
-                    >
-                      <img src={Usersicon} alt="users" className="w-6 h-6" />
-                      <span
-                        className={`font-medium text-gray-700 whitespace-nowrap transition-all duration-300 ms-3 ${!isOpen && "opacity-0 w-0 overflow-hidden"
-                          }`}
-                      >
-                        {t("Users")}
-                      </span>
-                    </li>
-                    <li
-                      onClick={() => navigate("/Roles")}
-                      className={getTabClass("/Roles")}
-                    >
-                      <img src={Rolesicon} alt="Roles" className="w-6 h-6" />
-                      <span
-                        className={`font-medium text-gray-700 whitespace-nowrap transition-all duration-300 ms-3 ${!isOpen && "opacity-0 w-0 overflow-hidden"
-                          }`}
-                      >
-                        {t("Roles")}
-                      </span>
-                    </li>
-                    <li
-                      onClick={() => navigate("/Beds")}
-                      className={getTabClass("/Beds")}
-                    >
-                      <img src={Beds} alt="Beds" className="w-6 h-6" />
-                      <span
-                        className={`font-medium text-gray-700 whitespace-nowrap transition-all duration-300 ms-3 ${!isOpen && "opacity-0 w-0 overflow-hidden"
-                          }`}
-                      >
-                        {t("Beds")}
-                      </span>
-                    </li>
-                    <li
-                      onClick={() => navigate("/Department")}
-                      className={getTabClass("/Department")}
-                    >
-                      <img
-                        src={Department}
-                        alt="Department"
-                        className="w-6 h-6"
-                      />
-                      <span
-                        className={`font-medium text-gray-700 whitespace-nowrap transition-all duration-300 ms-3 ${!isOpen && "opacity-0 w-0 overflow-hidden"
-                          }`}
-                      >
-                        {t("Department")}
-                      </span>
-                    </li>
-                  </ul>
-                )} */}
-              {/* <li
-                  onClick={() => navigate("/patient-display")}
-                  className={getTabClass("/patient-display")}
-                >
-                  <img
-                    src={TVscreeen}
-                    alt="patient-display"
-                    className="w-6 h-6"
-                  />
-                  <span
-                    className={`font-medium text-gray-700 whitespace-nowrap transition-all duration-300 ms-3 ${!isOpen && "opacity-0 w-0 overflow-hidden"
-                      }`}
-                  >
-                    {t("TV Screen")}
-                  </span>
-                </li>
-                <li
-                  onClick={() => navigate("/kpi")}
-                  className={getTabClass("/kpi")}
-                >
-                  <img src={KPI} alt="KPI" className="w-6 h-6" />
-                  <span
-                    className={`font-medium text-gray-700 whitespace-nowrap transition-all duration-300 ms-3 ${!isOpen && "opacity-0 w-0 overflow-hidden"
-                      }`}
-                  >
-                    {t("KPI")}
-                  </span>
-                </li> */}
-              {/* </ul> */}
             </div>
           </nav>
         </div>
