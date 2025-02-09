@@ -125,7 +125,7 @@ function PatientJourney() {
       { name: "mobile Number", uid: "mobileNumber", sortable: true },
       { name: "Gender", uid: "sex", sortable: true },
       { name: "Blood Group", uid: "bloodGroup", sortable: true },
-      { name: "Bed", uid: "bed" },
+      // { name: "Bed", uid: "bed" },
       { name: "status", uid: "status", sortable: true },
       { name: "ACTIONS", uid: "actions" },
     ];
@@ -142,8 +142,8 @@ function PatientJourney() {
                 return <span>{Roless?.sex || ""}</span>;
             case "bloodGroup":
                 return <span>{Roless?.bloodGroup || ""}</span>;
-            case "bed":
-                return <span>{Roless?.bed || ""}</span>;
+            // case "bed":
+            //     return <span>{Roless?.bed.bedNumber || ""}</span>;
             case "status":
                 return (
                   <span
