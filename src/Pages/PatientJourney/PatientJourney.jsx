@@ -122,7 +122,7 @@ function PatientJourney() {
     const columns = [
       { name: "Name", uid: "name", sortable: true },
       { name: "MRN Number", uid: "mrnNumber", sortable: true },
-      { name: "mobile Number", uid: "mobileNumber", sortable: true },
+      { name: "Mobile Number", uid: "mobileNumber", sortable: true },
       { name: "Gender", uid: "sex", sortable: true },
       { name: "Blood Group", uid: "bloodGroup", sortable: true },
       // { name: "Bed", uid: "bed" },
