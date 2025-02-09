@@ -31,28 +31,27 @@ export const RolesContext = createContext([]);
 
 const App = () => {
   const [userRoles, setUserRoles] = useState([]);
-    const accessuserdata = JSON.parse(localStorage.getItem("userdata"));
-    useEffect(() => {
-      const fetchRoles = async () => {
-        try {
-          const response = await newRequest.get(`/api/v1/user/${accessuserdata?.user?.id || ""}`);
-          setUserRoles(response?.data?.data?.roles?.map(role => role.name) || []);
-          
-        } catch (error) {
-          console.error("Error fetching roles:", error);
-        }
-      };
+  const accessuserdata = JSON.parse(localStorage.getItem("userdata"));
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await newRequest.get(`/api/v1/user/${accessuserdata?.user?.id || ""}`);
+        setUserRoles(response?.data?.data?.roles?.map(role => role.name) || []);
+      } catch (error) {
+        console.error("Error fetching roles:", error);
+      }
+    };
 
-      fetchRoles();
-    }, []);
+    fetchRoles();
+  }, []);
   return (
     <>
       <DataTableProvider>
-        <RolesProvider>
-          <div>
-            <RolesContext.Provider value={userRoles}>
-              <BrowserRouter>
-                <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <RolesProvider>
+            <div>
+              <RolesContext.Provider value={userRoles}>
+                <BrowserRouter>
                   <Routes>
                     <Route path="/" element={<Login />} />
                     <Route
@@ -112,13 +111,13 @@ const App = () => {
                     <Route
                       path="/location-waiting-area/:id"
                       element={<LocationWaitingArea />}
-                      // element={
-                      //   <ProtectedRoute
-                      //     allowedRoles={["location-waiting-area/:id"]}
-                      //   >
-                      //     <LocationWaitingArea />
-                      //   </ProtectedRoute>
-                      // }
+                    // element={
+                    //   <ProtectedRoute
+                    //     allowedRoles={["location-waiting-area/:id"]}
+                    //   >
+                    //     <LocationWaitingArea />
+                    //   </ProtectedRoute>
+                    // }
                     />
                     <Route
                       path="/location"
@@ -207,11 +206,11 @@ const App = () => {
                     />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
-                </QueryClientProvider>
-              </BrowserRouter>
-            </RolesContext.Provider>
-          </div>
-        </RolesProvider>
+                </BrowserRouter>
+              </RolesContext.Provider>
+            </div>
+          </RolesProvider>
+        </QueryClientProvider>
       </DataTableProvider>
     </>
   );
