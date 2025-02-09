@@ -199,8 +199,6 @@ function SideNav({ children }) {
   };
 
   const storedUserData = JSON.parse(localStorage.getItem("userdata"));
-  console.log(storedUserData); // This should now log a proper object
-
   const getAllRegisteredMembers = async () => {
     try {
       const res = await newRequest.get(`/api/v1/user/${storedUserData?.user?.id || ""}`);
