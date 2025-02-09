@@ -53,7 +53,7 @@ const WaitingArea = () => {
   const [birthDate, setBirthDate] = useState("");
   const [mrnNumber, setMrnNumber] = useState("");
 
-  const { isLoading, data, error, refetch } = useQuery("fetchAllMegaMenuss", async () => {
+  const { isLoading, data, error, refetch } = useQuery("waitingarea", async () => {
     try {
       const response = await newRequest.get(`/api/v1/patients/${id}`);
       return response?.data?.data || {};
