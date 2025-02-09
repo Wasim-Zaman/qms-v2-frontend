@@ -23,6 +23,7 @@ import newRequest from "../../../utils/newRequest";
 import AssignRoles from "./AssignRoles";
 import { IoPersonRemove } from "react-icons/io5";
 import Removeassignrole from "./Removeassignrole";
+import AddUser from "./AddUser";
 
 
 export const VerticalDotsIcon = ({ size = 24, width, height, ...props }) => {
@@ -55,6 +56,7 @@ function Users() {
     const [selectedUsers, setselectedUsers] = useState(null);
     const [removeUserAssignRoles, setremoveUserAssignRoles] = useState(false)
     const [removeselectedUsers, setremoveselectedUsers] = useState(null);
+    const [showAddUser, setShowAddUser] = useState(false);
 
     const fetchUsers = async () => {
         setLoading(true);
@@ -64,6 +66,22 @@ function Users() {
             });
             setUserdata(response?.data?.data?.users || []);
             setPagination(response.data.data.pagination);
+        } catch (error) {
+            console.error("Error fetching User:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const refreshUsersWithoutSearch = async () => {
+        setLoading(true);
+        try {
+            const response = await newRequest.get("/api/v1/user", {
+                params: { page }
+            });
+            setUserdata(response?.data?.data?.users || []);
+            setPagination(response.data.data.pagination);
+            setSearch("");
         } catch (error) {
             console.error("Error fetching User:", error);
         } finally {
@@ -194,6 +212,14 @@ function Users() {
                         placeholder="Search by Users name..."
                         startContent={<FaSearch className="text-default-300 me-2" />}
                     />
+                    <Button 
+                        color="primary" 
+                        className="bg-green-500 text-white"
+                        startContent={<FaUserPlus />}
+                        onPress={() => setShowAddUser(true)}
+                    >
+                        Add New User
+                    </Button>
                 </div>
             </div>
         ),
@@ -274,6 +300,11 @@ function Users() {
                     selectdatauser={removeselectedUsers}
                 />
             )}
+            <AddUser
+                isVisible={showAddUser}
+                setVisibility={setShowAddUser}
+                refreshUsers={refreshUsersWithoutSearch}
+            />
         </SideNav>
     );
 }

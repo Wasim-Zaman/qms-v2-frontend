@@ -80,7 +80,7 @@ const PatientInformation = () => {
     };
 
     try {
-      const response = await axios.post(`${baseUrl}/api/v1/patients`, patientData,
+      const response = await axios.post(`${baseUrl}/api/v2/patients`, patientData,
         {
           headers: {
             "Content-Type": "application/json",
@@ -148,6 +148,7 @@ const PatientInformation = () => {
         setBloodGroup(patientData.bloodGroup || "");
         setBirthDate(patientData.birthDate || "");
         setMrnNumber(patientData.mrnNumber || "");
+
         toast.success(response.data.message || "Patient found!");
       }
     } catch (error) {
@@ -162,6 +163,7 @@ const PatientInformation = () => {
       setBloodGroup("");
       setBirthDate("");
       setMrnNumber("");
+      setMobileNumber("");
     } finally {
       setLoading(false);
     }
@@ -191,7 +193,7 @@ const PatientInformation = () => {
       };
 
       const response = await axios.post(
-        `${baseUrl}/api/v1/patients/re-register/${patientId}`,
+        `${baseUrl}/api/v2/patients/re-register/${patientId}`,
         updateData,
         {
           headers: {
@@ -294,6 +296,7 @@ const PatientInformation = () => {
                     <div className="w-full mt-2">
                       <PhoneInput
                         onChange={(e) => setMobileNumber(e)}
+                        value={MobileNumber}
                         international
                         country={"sa"}
                         defaultCountry={"sa"}
@@ -376,7 +379,7 @@ const PatientInformation = () => {
                     id="status"
                     className="w-full mt-2 p-3 border border-green-400 rounded-lg focus:ring-2 focus:ring-green-300"
                   >
-                    <option>{t("Select Status")}</option>
+                    
                     <option value="Non-urgent">{t("Non-urgent")}</option>
                     <option value="Urgent">{t("Urgent")}</option>
                     <option value="Critical">{t("Critical")}</option>
@@ -450,7 +453,7 @@ const PatientInformation = () => {
                   <textarea
                     id="cheifComplaint"
                     rows="4"
-                    value={cheifComplaint}
+                    
                     onChange={(e) => setcheifComplaint(e.target.value)}
                     placeholder={t("Describe the complaint")}
                     className="w-full mt-2 p-3 border border-green-400 rounded-lg focus:ring-2 focus:ring-green-300"

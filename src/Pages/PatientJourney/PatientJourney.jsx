@@ -8,10 +8,11 @@ import {
     TableCell,
     Input,
     Pagination,
+    Button,
 } from "@nextui-org/react";
 import { Spinner } from "@heroui/spinner";
 
-import { FaSearch, } from "react-icons/fa";
+import { FaSearch, FaFileExcel } from "react-icons/fa";
 import newRequest from "../../utils/newRequest";
 import SideNav from "../../components/Sidebar/SideNav";
 import PickerFilter from "./PickerFilter";
@@ -32,7 +33,6 @@ function PatientJourney() {
     const fetchAllRoles = async () => {
         setLoading(true);
         try {
-            // Clean filters object to remove empty values
             const cleanFilters = Object.entries(filters).reduce((acc, [key, value]) => {
                 if (value !== "" && value !== null && value !== undefined) {
                     acc[key] = value;
@@ -40,12 +40,13 @@ function PatientJourney() {
                 return acc;
             }, {});
 
-            const response = await newRequest.get("/api/v1/patients/journeys", {
+            const response = await newRequest.get("/api/v2/patients/journeys", {
                 params: { 
                     page,
                     sortBy, 
                     order: sortOrder,
-                    ...cleanFilters  // Only include filters with values
+                    ...cleanFilters,
+                    search: search || undefined  // Add search parameter
                 },
             });
             setAllRoles(response?.data?.data?.data || []);
@@ -59,7 +60,7 @@ function PatientJourney() {
 
     useEffect(() => {
         fetchAllRoles();
-    }, [page, sortBy, sortOrder, filters]);
+    }, [page, sortBy, sortOrder, filters, search]);
 
     const formatDateTime = (dateTime) => {
         if (!dateTime) return ""; // Handle empty values
@@ -147,7 +148,10 @@ function PatientJourney() {
                     <Input
                         isClearable
                         value={search}
-                        onValueChange={setSearch}
+                        onValueChange={(value) => {
+                            setSearch(value);
+                            setPage(1); // Reset to first page when searching
+                        }}
                         className="w-full sm:max-w-[44%] border-green-700 border py-1 rounded-lg focus:outline-none"
                         placeholder="Search by patient name or MRN ..."
                         startContent={<FaSearch className="text-default-300 me-2" />}
@@ -169,13 +173,16 @@ function PatientJourney() {
                         currentSortOrder={sortOrder}
                     />
 
-                    {/* <Button
-            className="bg-navy-600 border border-green-700 outline-none bg-transparent hover:bg-green-700 text-green-700 hover:text-white transition-all duration-300 rounded-lg py-2"
-            startContent={<FaPlus />}
-            onClick={() => setisAddRolesModalOpen(true)}
-          >
-            Add New Role
-          </Button> */}
+                    <Button
+                        className="bg-navy-600 border border-green-700 outline-none bg-transparent hover:bg-green-700 text-green-700 hover:text-white transition-all duration-300 rounded-lg py-2 ms-2"
+                        startContent={<FaFileExcel />}
+                        onClick={() => {
+                            // Add your export logic here
+                            console.log("Export to Excel clicked");
+                        }}
+                    >
+                        Export to Excel
+                    </Button>
                 </div>
             </div>
         ),
