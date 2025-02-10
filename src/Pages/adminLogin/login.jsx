@@ -29,7 +29,7 @@ const Login = () => {
         localStorage.setItem("userdata", JSON.stringify(response?.data?.data));
 
          toast.success("Successfully logged in!");
-         navigate("/patient-table");
+         navigate("/Home");
        }
      } catch (error) {
         toast.error(error?.response?.data?.message || "Not Login");

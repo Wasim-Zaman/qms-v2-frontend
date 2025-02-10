@@ -227,16 +227,18 @@ function SideNav({ children }) {
               className={`flex items-center w-full px-4 pt-4 pb-4 border-b border-gray-200 justify-center `}
             >
               <div
-                className={`transition-opacity duration-300 justify-center ${
+                className={`transition-opacity duration-300 justify-center cursor-pointer ${
                   !isOpen ? "opacity-0 w-0" : "opacity-100"
                 }`}
+                onClick={() => navigate("/Home")}
               >
                 <img src={logo} alt="logo" className="w-12 h-12" />
               </div>
               <div
-                className={`transition-opacity duration-300  ${
+                className={`transition-opacity duration-300 cursor-pointer ${
                   isOpen ? "opacity-0 w-0" : "opacity-100"
                 }`}
+                onClick={() => navigate("/Home")}
               >
                 <img src={logo} alt="logo" className="w-10 h-10 " />
               </div>

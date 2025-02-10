@@ -25,6 +25,7 @@ import newRequest from "./utils/newRequest.jsx";
 import ProtectedRoute from "./utils/ProtectedRoute.jsx";
 import NotFound from "./Pages/NotFound/NotFound.jsx";
 import PatientJourney from "./Pages/PatientJourney/PatientJourney.jsx";
+import Home from "./Pages/Home/Home.jsx";
 const queryClient = new QueryClient();
 
 export const RolesContext = createContext([]);
@@ -54,9 +55,14 @@ const App = () => {
                 <BrowserRouter>
                   <Routes>
                     <Route path="/" element={<Login />} />
+                    <Route path="/Home" element={<Home />} />
                     <Route
                       path="/patient-information"
-                      element={<PatientInformation />}
+                      element={
+                          <ProtectedRoute allowedRoles={["Registered Patients"]}>
+                            <PatientInformation />
+                          </ProtectedRoute>
+                    }
                     />
                     <Route
                       path="/update/patient-information/:Id"
@@ -111,13 +117,13 @@ const App = () => {
                     <Route
                       path="/location-waiting-area/:id"
                       element={<LocationWaitingArea />}
-                    // element={
-                    //   <ProtectedRoute
-                    //     allowedRoles={["location-waiting-area/:id"]}
-                    //   >
-                    //     <LocationWaitingArea />
-                    //   </ProtectedRoute>
-                    // }
+                      // element={
+                      //   <ProtectedRoute
+                      //     allowedRoles={["location-waiting-area/:id"]}
+                      //   >
+                      //     <LocationWaitingArea />
+                      //   </ProtectedRoute>
+                      // }
                     />
                     <Route
                       path="/location"
