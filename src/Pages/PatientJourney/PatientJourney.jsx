@@ -94,30 +94,6 @@ function PatientJourney() {
         fetchAllRoles();
     }, [page, sortBy, sortOrder, filters, search]);
 
-    const formatDateTime = (dateTime) => {
-        if (!dateTime) return ""; // Handle empty values
-        const date = new Date(dateTime);
-        if (isNaN(date.getTime())) return ""; // Check for valid date
-        return date.toLocaleString("en-GB", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric", // Fix: Use "numeric" instead of "4-digit"
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-        });
-    };
-
-    const calculateTotalHours = (treatmentEnded, registration) => {
-        const treatmentEndedtime = new Date(treatmentEnded);
-        const registrationtime = new Date(registration);
-        const totalTime = treatmentEndedtime - registrationtime; // Difference in milliseconds
-        const hours = Math.floor(totalTime / 3600000); // Convert to hours
-        const minutes = Math.floor((totalTime % 3600000) / 60000); // Convert to minutes
-        // If the total time is less than an hour, show "0 hrs"
-        const displayHours = hours > 0 ? `${hours} hrs` : "0 hrs";
-        return `${displayHours} ${minutes} min`; // Return formatted result
-    };
 
     const columns = [
       { name: "Name", uid: "name", sortable: true },
@@ -186,73 +162,72 @@ function PatientJourney() {
         }
     };
 
-    const topContent = useMemo(
-        () => (
-            <div className="flex flex-col gap-4 mb-4">
-                <div className="flex items-center">
-                    <Input
-                        isClearable
-                        value={search}
-                        onValueChange={(value) => {
-                            setSearch(value);
-                            setPage(1); // Reset to first page when searching
-                        }}
-                        className="w-full sm:max-w-[44%] border-green-700 border py-1 rounded-lg focus:outline-none"
-                        placeholder="Search by patient name or MRN ..."
-                        startContent={<FaSearch className="text-default-300 me-2" />}
-                    />
-
-                    <PickerFilter
-                        onFilterChange={(newFilters) => {
-                            setFilters(newFilters);
-                            fetchAllRoles();
-                        }}
-                    />
-
-                    <PickerSort
-                        onSort={({ sortBy: newSortBy, sortOrder: newSortOrder }) => {
-                            setSortBy(newSortBy);
-                            setSortOrder(newSortOrder);
-                        }}
-                        currentSortBy={sortBy}
-                        currentSortOrder={sortOrder}
-                    />
-
-                    <Button
-                        className="bg-navy-600 border border-green-700 outline-none bg-transparent hover:bg-green-700 text-green-700 hover:text-white transition-all duration-300 rounded-lg py-2 ms-2"
-                        startContent={<FaFileExcel />}
-                        onClick={async () =>{
-                           try {
-        const response = await newRequest.get("/api/v1/patients/export-excel", {
+      const handleExport = async () => {
+        try {
+            const response = await newRequest.get("/api/v1/patients/export-excel", {
             responseType: 'blob' // Important for handling file downloads
         });
-        
-        // Create download link
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `patient_journeys_${new Date().toISOString().split('T')[0]}.xlsx`;
-        
-        // Trigger download
-        document.body.appendChild(a);
-        a.click();
-        
-        // Cleanup
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        
-    } catch (error) {
-        console.error('Export failed:', error);
-        // You may want to add a toast notification here
-    }
-                        }}
-                    >
-                        Export to Excel
-                    </Button>
-                </div>
-            </div>
-        ),
-        [search]
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `patient_journeys_${new Date().toISOString().split("T")[0]}.xlsx`;
+
+            document.body.appendChild(a);
+            a.click();
+            
+            // Cleanup
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Export failed:", error);
+            alert("Failed to export. Please try again.");
+        }
+    };
+
+    const topContent = useMemo(
+      () => (
+        <div className="flex flex-col gap-4 mb-4">
+          <div className="flex items-center">
+            <Input
+              isClearable
+              value={search}
+              onValueChange={(value) => {
+                setSearch(value);
+                setPage(1); // Reset to first page when searching
+              }}
+              className="w-full sm:max-w-[44%] border-green-700 border py-1 rounded-lg focus:outline-none"
+              placeholder="Search by patient name or MRN ..."
+              startContent={<FaSearch className="text-default-300 me-2" />}
+            />
+
+            <PickerFilter
+              onFilterChange={(newFilters) => {
+                setFilters(newFilters);
+                fetchAllRoles();
+              }}
+            />
+
+            <PickerSort
+              onSort={({ sortBy: newSortBy, sortOrder: newSortOrder }) => {
+                setSortBy(newSortBy);
+                setSortOrder(newSortOrder);
+              }}
+              currentSortBy={sortBy}
+              currentSortOrder={sortOrder}
+            />
+
+            <Button
+              className="bg-navy-600 border border-green-700 outline-none bg-transparent hover:bg-green-700 text-green-700 hover:text-white transition-all duration-300 rounded-lg py-2 ms-2"
+              startContent={<FaFileExcel />}
+              onClick={handleExport}
+            >
+              Export to Excel
+            </Button>
+          </div>
+        </div>
+      ),
+      [search]
     );
 
     const bottomContent = useMemo(
