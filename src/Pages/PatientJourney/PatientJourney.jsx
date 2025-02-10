@@ -1,27 +1,27 @@
-import React, { useState, useEffect, useMemo } from "react";
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Input,
-  Pagination,
-  Button,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-} from "@nextui-org/react";
 import { Spinner } from "@heroui/spinner";
+import {
+    Button,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownTrigger,
+    Input,
+    Pagination,
+    Table,
+    TableBody,
+    TableCell,
+    TableColumn,
+    TableHeader,
+    TableRow,
+} from "@nextui-org/react";
+import React, { useEffect, useMemo, useState } from "react";
 import { BiSolidUserDetail } from "react-icons/bi";
-import { FaSearch, FaFileExcel, } from "react-icons/fa";
-import newRequest from "../../utils/newRequest";
+import { FaFileExcel, FaSearch, } from "react-icons/fa";
 import SideNav from "../../components/Sidebar/SideNav";
+import newRequest from "../../utils/newRequest";
+import PatientJourneyDetails from "./PatientJourneyDetails";
 import PickerFilter from "./PickerFilter";
 import PickerSort from "./PickerSort";
-import PatientJourneyDetails from "./PatientJourneyDetails"
 
 
 export const VerticalDotsIcon = ({ size = 24, width, height, ...props }) => {
@@ -221,9 +221,30 @@ function PatientJourney() {
                     <Button
                         className="bg-navy-600 border border-green-700 outline-none bg-transparent hover:bg-green-700 text-green-700 hover:text-white transition-all duration-300 rounded-lg py-2 ms-2"
                         startContent={<FaFileExcel />}
-                        onClick={() => {
-                            // Add your export logic here
-                            console.log("Export to Excel clicked");
+                        onClick={async () =>{
+                           try {
+        const response = await newRequest.get("/api/v1/patients/export-excel", {
+            responseType: 'blob' // Important for handling file downloads
+        });
+        
+        // Create download link
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `patient_journeys_${new Date().toISOString().split('T')[0]}.xlsx`;
+        
+        // Trigger download
+        document.body.appendChild(a);
+        a.click();
+        
+        // Cleanup
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+    } catch (error) {
+        console.error('Export failed:', error);
+        // You may want to add a toast notification here
+    }
                         }}
                     >
                         Export to Excel

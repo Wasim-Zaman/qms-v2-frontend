@@ -1,7 +1,7 @@
 
 
 let mainUrl = 'https://qmsapi.groute.online';
-// let mainUrl = 'http://gs1ksa.org:9030';  
+// let mainUrl = 'http://localhost:3000';  
 
 
 export const backendUrl = mainUrl;
