@@ -29,6 +29,8 @@ const Login = () => {
         localStorage.setItem("userdata", JSON.stringify(response?.data?.data));
 
          toast.success("Successfully logged in!");
+         
+         await new Promise(resolve => setTimeout(resolve, 100));
          navigate("/Home");
        }
      } catch (error) {

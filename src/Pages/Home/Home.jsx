@@ -25,6 +25,8 @@ const Home = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [userRoles, setUserRoles] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [expandedItem, setExpandedItem] = useState(null);
 
     const sidebarItems = [
         {
@@ -135,23 +137,29 @@ const Home = () => {
         },
     ];
 
-    const storedUserData = JSON.parse(localStorage.getItem("userdata"));
     const getAllRegisteredMembers = async () => {
+        const storedUserData = JSON.parse(localStorage.getItem("userdata"));
+        
+        if (!storedUserData?.user?.id) {
+            navigate('/');
+            return;
+        }
+
         try {
-            const res = await newRequest.get(`/api/v1/user/${storedUserData?.user?.id || ""}`);
+            const res = await newRequest.get(`/api/v1/user/${storedUserData.user.id}`);
             const response = res.data?.data?.roles?.map((role) => role.name) || [];
             setUserRoles(response);
         } catch (error) {
             console.log(error);
+            navigate('/');
+        } finally {
+            setIsLoading(false);
         }
     };
 
     useEffect(() => {
         getAllRegisteredMembers();
-    }, [storedUserData?.user?.id]);
-
-
-    const [expandedItem, setExpandedItem] = useState(null); // New state for expanded menu
+    }, []);
 
     const handleItemClick = (page) => {
         if (page.subItems) {
@@ -160,6 +168,10 @@ const Home = () => {
             navigate(page.path);
         }
     };
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <>
