@@ -1,11 +1,11 @@
+import axios from 'axios';
 import React, { useState } from 'react';
+import toast from "react-hot-toast";
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import Spinner from '../../components/spinner/spinner';
 import '../../index.css';
 import { baseUrl } from "../../utils/config";
-import Spinner from '../../components/spinner/spinner';
-import toast from "react-hot-toast";
-import axios from 'axios';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
@@ -24,9 +24,11 @@ const Login = () => {
        });
 
        if (response.status === 200) {
-         const { accessToken } = response.data.data.user;
+         const { accessToken, refreshToken } = response.data.data.user;
          localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("userdata", JSON.stringify(response?.data?.data));
+         localStorage.setItem("refreshToken", refreshToken);
+         const userData = response.data.data;
+         localStorage.setItem("userdata", JSON.stringify(userData));
 
          toast.success("Successfully logged in!");
          
