@@ -24,9 +24,9 @@ const Login = () => {
        });
 
        if (response.status === 200) {
-         const { accessToken, refreshToken } = response.data.data.user;
+         const { accessToken } = response.data.data.user;
          localStorage.setItem("accessToken", accessToken);
-         localStorage.setItem("refreshToken", refreshToken);
+         
          const userData = response.data.data;
          localStorage.setItem("userdata", JSON.stringify(userData));
 
