@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { baseUrl } from "../../utils/config";
 import SideNav from "../../components/Sidebar/SideNav";
 import Registration from "../../Images/Registration.png";
 import CentralWaitingArea from "../../Images/Central Waiting Area.png";
@@ -139,14 +141,18 @@ const Home = () => {
 
     const getAllRegisteredMembers = async () => {
         const storedUserData = JSON.parse(localStorage.getItem("userdata"));
-        
+        const accessToken = localStorage.getItem("accessToken");
         if (!storedUserData?.user?.id) {
             navigate('/');
             return;
         }
 
         try {
-            const res = await newRequest.get(`/api/v1/user/${storedUserData.user.id}`);
+            const res = await axios.get(`${baseUrl}/api/v1/user/${storedUserData.user.id}`,{
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
             const response = res.data?.data?.roles?.map((role) => role.name) || [];
             setUserRoles(response);
         } catch (error) {
