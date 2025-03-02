@@ -17,6 +17,8 @@ import Department from "../../Images/Department.png";
 import Beds from "../../Images/Beds.jpg";
 import logout from "../../Images/logout.png";
 import PatientJourneyicon from "../../Images/PatientJourneyicon.png";
+import axios from "axios";
+import { baseUrl } from "../../utils/config";
 import newRequest from "../../utils/newRequest";
 import { useQuery } from "react-query";
 import UpdatedRoles from "../../Pages/MasterData/Roles/UpdatedRoles";
@@ -197,11 +199,15 @@ function SideNav({ children }) {
     localStorage.removeItem("sidebarOpen");
     navigate("/");
   };
-
+  const accessToken = localStorage.getItem("accessToken");
   const storedUserData = JSON.parse(localStorage.getItem("userdata"));
   const getAllRegisteredMembers = async () => {
     try {
-      const res = await newRequest.get(`/api/v1/user/${storedUserData?.user?.id || ""}`);
+      const res = await axios.get(`${baseUrl}/api/v1/user/${storedUserData?.user?.id || ""}`,{
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       const response = res.data?.data?.roles?.map((role) => role.name) || [];
       setUserRoles(response);
     } catch (error) {
