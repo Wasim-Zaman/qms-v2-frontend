@@ -253,22 +253,53 @@ function PatientTable() {
                   Page {currentPage} of {totalPages}
                 </span>
                 <div className="flex items-center gap-1">
-                  {[...Array(totalPages)].map((_, index) => (
-                    <button
-                      key={index + 1}
-                      onClick={() => {
-                        setCurrentPage(index + 1);
-                        setLoading(true);
-                      }}
-                      className={`w-8 h-8 rounded-full ${
-                        currentPage === index + 1
-                          ? 'bg-green-500 text-white'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      } flex items-center justify-center text-sm font-medium transition-colors duration-200`}
-                    >
-                      {index + 1}
-                    </button>
-                  ))}
+                  {(() => {
+                    let pages = [];
+                    const maxButtons = 5;
+                    let start = Math.max(1, currentPage - 2);
+                    let end = Math.min(totalPages, start + maxButtons - 1);
+
+                    if (end - start + 1 < maxButtons) {
+                      start = Math.max(1, end - maxButtons + 1);
+                    }
+
+                    if (start > 1) {
+                      pages.push(
+                        <span key="ellipsis-start" className="px-2">
+                          ...
+                        </span>
+                      );
+                    }
+
+                    for (let i = start; i <= end; i++) {
+                      pages.push(
+                        <button
+                          key={i}
+                          onClick={() => {
+                            setCurrentPage(i);
+                            setLoading(true);
+                          }}
+                          className={`w-8 h-8 rounded-full ${
+                            currentPage === i
+                              ? 'bg-green-500 text-white'
+                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                          } flex items-center justify-center text-sm font-medium transition-colors duration-200`}
+                        >
+                          {i}
+                        </button>
+                      );
+                    }
+
+                    if (end < totalPages) {
+                      pages.push(
+                        <span key="ellipsis-end" className="px-2">
+                          ...
+                        </span>
+                      );
+                    }
+
+                    return pages;
+                  })()}
                 </div>
                 <span className="text-sm text-gray-600 ml-2">
                   Total Records: {total}
