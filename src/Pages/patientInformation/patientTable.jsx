@@ -102,9 +102,9 @@ function PatientTable() {
               </div>
             </div>
 
-            <div className="max-h-[500px] sm:max-h-[300px] md:max-h-[450px] lg:max-h-[500px] overflow-y-scroll border border-gray-300 rounded-lg shadow-lg">
+            <div className="h-[500px] overflow-y-auto border border-gray-300 rounded-lg shadow-lg relative">
               <table className="min-w-full bg-white divide-y divide-gray-200">
-                <thead className="bg-green-300 sticky top-0">
+                <thead className="bg-green-300 sticky top-0 z-10">
                   <tr>
                     <th className="pl-4 w-8 py-3"> {/* Checkbox Header */} </th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -130,9 +130,15 @@ function PatientTable() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-200 relative">
                   {loading ? (
-                    <Spinner />
+                    <tr>
+                      <td colSpan="8" className="text-center">
+                        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80">
+                          <Spinner />
+                        </div>
+                      </td>
+                    </tr>
                   ) : (
                     patients
                       .filter(
