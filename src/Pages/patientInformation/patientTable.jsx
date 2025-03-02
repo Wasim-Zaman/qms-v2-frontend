@@ -16,6 +16,7 @@ function PatientTable() {
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
+  const [total, setTotal] = useState(0);
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const fetchPatients = async (page) => {
@@ -23,6 +24,7 @@ function PatientTable() {
       const response = await newRequest.get(`/api/v1/patients?page=${page}&limit=10${searchTerm ? `&search=${searchTerm}` : ''}`);
       setPatients(response?.data?.data?.data || []);
       setTotalPages(response?.data?.data?.pagination?.totalPages);
+      setTotal(response?.data?.data?.pagination?.total);
     } catch (error) {
       console.error("Error fetching patients:", error);
     } finally {
@@ -238,27 +240,58 @@ function PatientTable() {
                 </tbody>
               </table>
             </div>
-            <div className="flex justify-end mb-4 mt-6">
-              <button
-                onClick={handlePreviousPage}
-                className={`px-4 py-2 bg-green-500 text-white rounded mr-2 ${
-                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                disabled={currentPage === 1}
-              >
-                Previous Page
-              </button>
-              <button
-                onClick={handleNextPage}
-                className={`px-4 py-2 bg-green-500 text-white rounded ${
-                  currentPage === totalPages
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
-                disabled={currentPage === totalPages}
-              >
-                Next Page
-              </button>
+            <div className="flex justify-between items-center mb-4 mt-6">
+              {/* Pagination Information */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <div className="flex items-center gap-1">
+                  {[...Array(totalPages)].map((_, index) => (
+                    <button
+                      key={index + 1}
+                      onClick={() => {
+                        setCurrentPage(index + 1);
+                        setLoading(true);
+                      }}
+                      className={`w-8 h-8 rounded-full ${
+                        currentPage === index + 1
+                          ? 'bg-green-500 text-white'
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      } flex items-center justify-center text-sm font-medium transition-colors duration-200`}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+                </div>
+                <span className="text-sm text-gray-600 ml-2">
+                  Total Records: {total}
+                </span>
+              </div>
+
+              {/* Previous/Next Buttons */}
+              <div className="flex gap-2">
+                <button
+                  onClick={handlePreviousPage}
+                  className={`px-4 py-2 bg-green-500 text-white rounded ${
+                    currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  disabled={currentPage === 1}
+                >
+                  Previous Page
+                </button>
+                <button
+                  onClick={handleNextPage}
+                  className={`px-4 py-2 bg-green-500 text-white rounded ${
+                    currentPage === totalPages
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                  disabled={currentPage === totalPages}
+                >
+                  Next Page
+                </button>
+              </div>
             </div>
           </div>
         </SideNav>
