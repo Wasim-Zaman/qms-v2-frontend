@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SideNav from "../../components/Sidebar/SideNav";
 import Patientsnumberchat from "./Patientsnumberchat";
-import Categorychat from "./Categorychat";
+import PrevouseJourney from "./prevouseJourney";
 import DepartmentData from "./departmentData";
 import EyeBall from "./eyeBall";
 const Kpi = () => {
@@ -23,14 +23,15 @@ const Kpi = () => {
                 <div className="bg-primary rounded-md shadow-md">
                   <Patientsnumberchat />
                 </div>
-                {/* <div className="bg-primary rounded-md shadow-md">
-                  <Categorychat data={dummyData} />
-                </div> */}
+                
                 <div className="bg-primary rounded-md shadow-md">
                   <DepartmentData />
                 </div>
                 <div className="bg-primary rounded-md shadow-md">
                   <EyeBall />
+                </div>
+                <div className="bg-primary rounded-md shadow-md">
+                  <PrevouseJourney />
                 </div>
               </div>
             </div>

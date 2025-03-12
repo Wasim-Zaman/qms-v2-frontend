@@ -24,7 +24,7 @@ import Departmentmonitoring from "./Pages/DepartmentWaitingList/Departmentmonito
 import newRequest from "./utils/newRequest.jsx";
 import ProtectedRoute from "./utils/ProtectedRoute.jsx";
 import NotFound from "./Pages/NotFound/NotFound.jsx";
-import PatientJourney from "./Pages/PatientJourney/PatientJourney.jsx";
+import PatientJourney from "./Pages/PatientJourney2/PatientJourney.jsx";
 import Home from "./Pages/Home/Home.jsx";
 const queryClient = new QueryClient();
 
