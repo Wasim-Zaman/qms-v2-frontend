@@ -48,7 +48,7 @@ const PatientInformation = () => {
   const [Age, setAge] = useState("");
   const [Nationality, setNationality] = useState("Saudi Arabia");
   const [Sex, setSex] = useState("");
-  const [Status, setStatus] = useState("");
+  const [Status, setStatus] = useState("Non-urgent");
   const [MobileNumber, setMobileNumber] = useState("");
   const [cheifComplaint, setcheifComplaint] = useState("");
   const [ticket, setTicket] = useState(null);
@@ -142,7 +142,7 @@ const PatientInformation = () => {
         setSex(patientData.sex || "");
         setIDNumber(patientData.idNumber || "");
         setAge(patientData.age || "");
-        setStatus(patientData.status || "");
+        setStatus(patientData.status || "Non-urgent");
         setMobileNumber(patientData.mobileNumber || "");
         setcheifComplaint(patientData.cheifComplaint || "");
         setBloodGroup(patientData.bloodGroup || "");
