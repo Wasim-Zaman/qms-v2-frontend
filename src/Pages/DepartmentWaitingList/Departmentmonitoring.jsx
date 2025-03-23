@@ -11,19 +11,28 @@ const Departmentmonitoring = () => {
     const [error, setError] = useState(null);
     const [showCalledPatients, setShowCalledPatients] = useState(false);
     const [calledPatients, setCalledPatients] = useState([]);
+    const [departmentName, setDepartmentName] = useState("");
     const navigate = useNavigate();
 
     const { id } = useParams();
     // Fetch data from API
     useEffect(() => {
-      const fetchPatients = async () => {
+      const fetchData = async () => {
         try {
           setLoading(true);
-          const response = await newRequest.get(
+          // Fetch patients
+          const patientsResponse = await newRequest.get(
             `api/v1/patients/by-state?deptId=${id}`
           );
-          setWaitingPatients(response.data.data.waiting || []);
-          setInProgressPatients(response.data.data.inProgress || []);
+          setWaitingPatients(patientsResponse.data.data.waiting || []);
+          setInProgressPatients(patientsResponse.data.data.inProgress || []);
+          
+          // Fetch department details
+          const deptResponse = await newRequest.get(`/api/v1/departments/all`);
+          const departments = deptResponse?.data?.data || [];
+          const department = departments.find(dept => dept.tblDepartmentID === id);
+          setDepartmentName(department?.deptname || "Unknown Department");
+          
         } catch (err) {
           setError("Error fetching data: " + err.message);
         } finally {
@@ -31,7 +40,7 @@ const Departmentmonitoring = () => {
         }
       };
 
-      fetchPatients();
+      fetchData();
     }, [id]);
 
     const fetchCalledPatients = async () => {
@@ -54,6 +63,7 @@ const Departmentmonitoring = () => {
                     {/* Header Section */}
                     <div className="bg-purple-500 text-white p-4 flex justify-between items-center">
                         <h1 className="text-lg font-bold">DEPARTMENT MONITORING</h1>
+                        <h2 className="font-semibold text-xl text-white">{departmentName}</h2>
                         <div className="flex items-center space-x-4">
                             <input
                                 type="text"
