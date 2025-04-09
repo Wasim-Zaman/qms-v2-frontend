@@ -17,6 +17,20 @@ import newRequest from "../../utils/newRequest";
 import PickerFilter from "../PatientJourney2/PickerFilter";
 import PickerSort from "../PatientJourney2/PickerSort";
 
+// Utility function to format date-time
+const formatDateTime = (dateString) => {
+  if (!dateString) return "Not Set";
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  }).format(date);
+};
+
 const PrevouseJourney = ({ data }) => {
   const [AllRoles, setAllRoles] = useState([]);
   const [pagination, setPagination] = useState({});
@@ -77,17 +91,17 @@ const PrevouseJourney = ({ data }) => {
       case "mrnNumber":
         return <span>{journey?.patient?.mrnNumber || ""}</span>;
       case "firstCallTime":
-        return <span>{journey?.firstCallTime || "Not Set"}</span>;
+        return <span>{formatDateTime(journey?.firstCallTime)}</span>;
       case "vitalTime":
-        return <span>{journey?.vitalTime || "Not Set"}</span>;
+        return <span>{formatDateTime(journey?.vitalTime)}</span>;
       case "assignDeptTime":
-        return <span>{journey?.assignDeptTime || "Not Set"}</span>;
+        return <span>{formatDateTime(journey?.assignDeptTime)}</span>;
       case "secondCallTime":
-        return <span>{journey?.secondCallTime || "Not Set"}</span>;
+        return <span>{formatDateTime(journey?.secondCallTime)}</span>;
       case "beginTime":
-        return <span>{journey?.beginTime || "Not Set"}</span>;
+        return <span>{formatDateTime(journey?.beginTime)}</span>;
       case "endTime":
-        return <span>{journey?.endTime || "Not Set"}</span>;
+        return <span>{formatDateTime(journey?.endTime)}</span>;
       default:
         return null;
     }

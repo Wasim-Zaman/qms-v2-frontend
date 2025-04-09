@@ -120,7 +120,7 @@ const WaitingArea = () => {
 
     try {
       const response = await newRequest.post(
-        `/api/v1/patients/${patientId}/vital-sign`,
+        `/api/v2/patients/${patientId}/vital-sign`,
         body,
       );
       if (response.status >= 200) {
