@@ -166,51 +166,6 @@ function PatientJourney() {
         }
     };
 
-    const topContent = useMemo(
-      () => (
-        <div className="flex flex-col gap-4 mb-4">
-          <div className="flex items-center">
-            <Input
-              isClearable
-              value={search}
-              onValueChange={(value) => {
-                setSearch(value);
-                setPage(1); // Reset to first page when searching
-              }}
-              className="w-full sm:max-w-[44%] border-green-700 border py-1 rounded-lg focus:outline-none"
-              placeholder="Search by patient name or MRN ..."
-              startContent={<FaSearch className="text-default-300 me-2" />}
-            />
-
-            <PickerFilter
-              onFilterChange={(newFilters) => {
-                setFilters(newFilters);
-                fetchAllRoles();
-              }}
-            />
-
-            <PickerSort
-              onSort={({ sortBy: newSortBy, sortOrder: newSortOrder }) => {
-                setSortBy(newSortBy);
-                setSortOrder(newSortOrder);
-              }}
-              currentSortBy={sortBy}
-              currentSortOrder={sortOrder}
-            />
-
-            <Button
-              className="bg-navy-600 border border-green-700 outline-none bg-transparent hover:bg-green-700 text-green-700 hover:text-white transition-all duration-300 rounded-lg py-2 ms-2"
-              startContent={<FaFileExcel />}
-              onClick={handleExport}
-            >
-              Export to Excel
-            </Button>
-          </div>
-        </div>
-      ),
-      [search]
-    );
-
     const bottomContent = useMemo(
       () => (
         <div className="py-2 px-2 flex justify-between items-center">
@@ -240,46 +195,102 @@ function PatientJourney() {
 
     return (
       <SideNav>
-        <div className="p-6 bg-blue-50 min-h-screen">
-          <Table
-            aria-label="Patient Journey"
-            bottomContent={bottomContent}
-            topContent={topContent}
-            classNames={{
-              wrapper: "shadow-md rounded-lg bg-white mt-6 w-full ",
-            }}
-            sortDescriptor={{
-              column: sortBy,
-              direction: sortOrder === "asc" ? "ascending" : "descending",
-            }}
-            onSortChange={handleColumnSort}
-          >
-            <TableHeader columns={columns}>
-              {(column) => (
-                <TableColumn
-                  key={column.uid}
-                  align={column.uid === "actions" ? "center" : "start"}
-                  className="bg-gray-50 text-gray-600"
+        <div className="p-6 bg-gray-100 min-h-screen">
+          <div className="bg-white shadow-lg rounded-lg p-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Patient Journey</h2>
+            <div className="flex flex-col gap-4 mb-6">
+              <div className="flex flex-wrap items-center gap-4">
+                <Input
+                  isClearable
+                  value={search}
+                  onValueChange={(value) => {
+                    setSearch(value);
+                    setPage(1); // Reset to first page when searching
+                  }}
+                  className="w-full sm:max-w-[44%] border-gray-300 border py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Search by patient name or MRN ..."
+                  startContent={<FaSearch className="text-gray-400 me-2" />}
+                />
+
+                <PickerFilter
+                  onFilterChange={(newFilters) => {
+                    setFilters(newFilters);
+                    fetchAllRoles();
+                  }}
+                />
+
+                <PickerSort
+                  onSort={({ sortBy: newSortBy, sortOrder: newSortOrder }) => {
+                    setSortBy(newSortBy);
+                    setSortOrder(newSortOrder);
+                  }}
+                  currentSortBy={sortBy}
+                  currentSortOrder={sortOrder}
+                />
+
+                <Button
+                  className="bg-green-600 text-white hover:bg-green-700 transition-all duration-300 rounded-lg py-2 px-4 flex items-center gap-2"
+                  startContent={<FaFileExcel />}
+                  onClick={handleExport}
                 >
-                  {column.name}
-                </TableColumn>
-              )}
-            </TableHeader>
-            <TableBody
-              items={AllRoles}
-              emptyContent="No Patient Journey found"
-              isLoading={loading}
-              loadingContent={<Spinner color="secondary" size="lg" />}
+                  Export to Excel
+                </Button>
+              </div>
+            </div>
+
+            <Table
+              aria-label="Patient Journey"
+              bottomContent={bottomContent}
+              topContent={null}
+              classNames={{
+                wrapper: "shadow-md rounded-lg bg-white mt-6 w-full",
+              }}
+              sortDescriptor={{
+                column: sortBy,
+                direction: sortOrder === "asc" ? "ascending" : "descending",
+              }}
+              onSortChange={handleColumnSort}
             >
-              {(item) => (
-                <TableRow key={item.id}>
-                  {(columnKey) => (
-                    <TableCell>{renderCell(item, columnKey)}</TableCell>
-                  )}
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+              <TableHeader columns={columns}>
+                {(column) => (
+                  <TableColumn
+                    key={column.uid}
+                    align={column.uid === "actions" ? "center" : "start"}
+                    className="bg-gray-50 text-gray-600 font-semibold text-sm uppercase tracking-wide"
+                  >
+                    {column.name}
+                  </TableColumn>
+                )}
+              </TableHeader>
+              <TableBody
+                items={AllRoles}
+                emptyContent={
+                  <div className="text-center text-gray-500 py-6">
+                    No Patient Journey found
+                  </div>
+                }
+                isLoading={loading}
+                loadingContent={
+                  <div className="flex justify-center items-center py-6">
+                    <Spinner color="secondary" size="lg" />
+                  </div>
+                }
+              >
+                {(item) => (
+                  <TableRow
+                    key={item.id}
+                    className="hover:bg-gray-100 transition-colors duration-200"
+                  >
+                    {(columnKey) => (
+                      <TableCell className="text-sm text-gray-700">
+                        {renderCell(item, columnKey)}
+                      </TableCell>
+                    )}
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
         {Detailspatient && (
           <PatientJourneyDetails
