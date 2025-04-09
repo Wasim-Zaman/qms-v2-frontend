@@ -9,6 +9,7 @@ import Spinner from "../../components/spinner/spinner";
 const PatientMonitoring = () => {
   const [waitingPatients, setWaitingPatients] = useState([]);
   const [nowServing, setNowServing] = useState([]);
+  const [nonDischargedPatients, setNonDischargedPatients] = useState([]); // New state
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -31,6 +32,21 @@ const PatientMonitoring = () => {
           setNowServing(response.data.data.inProgress || []);
         } else {
           setError("Failed to fetch patient data.");
+        }
+
+        // Fetch non-discharged patients
+        const nonDischargedResponse = await axios.get(
+          `${baseUrl}/api/v1/patients/non-discharged`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        if (nonDischargedResponse.data.success) {
+          setNonDischargedPatients(nonDischargedResponse.data.data || []);
+        } else {
+          setError("Failed to fetch non-discharged patients.");
         }
       } catch (err) {
         setError("Error fetching data: " + err.message);
@@ -163,14 +179,14 @@ const PatientMonitoring = () => {
             <span className="text-gray-700 font-medium">Number of Patients</span>
             <input
               type="text"
-              value={nowServing.length}
+              value={nonDischargedPatients.length}
               readOnly
               className="w-12 text-center p-2 border border-gray-300 rounded-lg"
             />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          {nowServing.map((patient) => (
+          {nonDischargedPatients.map((patient) => (
             <div
               key={patient.id}
               className="bg-blue-100 border-l-4 border-blue-500 rounded-lg p-4 text-center cursor-pointer"
