@@ -1,10 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs"; // Install dayjs for date comparison
 
 import axios from "axios";
 import { baseUrl } from "../../utils/config";
 import SideNav from "../../components/Sidebar/SideNav";
 import Spinner from "../../components/spinner/spinner";
+
+const isPreviousDay = (registrationDate) => {
+  const today = dayjs().startOf("day");
+  const yesterday = today.subtract(1, "day");
+  const regDate = dayjs(registrationDate).startOf("day");
+  return regDate.isSame(yesterday);
+};
+
+const getCardClass = (registrationDate, firstCallTime) => {
+  if (isPreviousDay(registrationDate)) {
+    return "bg-red-100 border-l-4 border-red-500"; // Red for previous day
+  }
+  return firstCallTime
+    ? "bg-yellow-100 border-l-4 border-yellow-500" // Yellow for first call
+    : "bg-green-100 border-l-4 border-green-500"; // Green for others
+};
 
 const PatientMonitoring = () => {
   const [waitingPatients, setWaitingPatients] = useState([]);
@@ -154,11 +171,7 @@ const PatientMonitoring = () => {
           {waitingPatients.map((patient) => (
             <div
               key={patient.id}
-              className={`${
-                patient.firstCallTime 
-                  ? 'bg-yellow-100 border-l-4 border-yellow-500' 
-                  : 'bg-green-100 border-l-4 border-green-500'
-              } rounded-lg p-4 text-center cursor-pointer relative`} // Added 'relative' for positioning
+              className={`${getCardClass(patient.registrationDate, patient.firstCallTime)} rounded-lg p-4 text-center cursor-pointer relative`}
               onClick={() => window.open(`/waiting-area/${patient.id}`, '_blank')}
             >
               {/* Green dot for "callPatient: true" */}
@@ -195,10 +208,16 @@ const PatientMonitoring = () => {
           {nonDischargedPatients.map((patient) => (
             <div
               key={patient.id}
-              className="bg-blue-100 border-l-4 border-blue-500 rounded-lg p-4 text-center cursor-pointer"
+              className={`${getCardClass(patient.registrationDate, patient.firstCallTime)} rounded-lg p-4 text-center cursor-pointer relative`}
               onClick={() => window.open(`/Servings/${patient.id}`, '_blank')}
             >
-              <strong className="text-gray-700 mt-2">{patient.department ? patient.department?.deptname : "TR"?? "TR"}</strong>
+              {/* Green dot for "callPatient: true" */}
+              {patient.callPatient && (
+                <div className="absolute top-2 right-2 w-3 h-3 bg-green-500 rounded-full"></div>
+              )}
+              <strong className="text-gray-700 mt-2">
+                {patient.department ? patient.department?.deptname : "TR" ?? "TR"}
+              </strong>
               <h3 className="text-blue-600 font-bold">{patient.ticketNumber}</h3>
               <p className="text-black-700 mt-2">{patient.name}</p>
             </div>
