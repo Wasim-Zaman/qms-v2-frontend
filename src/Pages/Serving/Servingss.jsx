@@ -616,9 +616,9 @@ const Servingss = () => {
                       </button>
                       <button
                         className={`bg-red-500 text-white font-semibold py-2 px-10 rounded hover:bg-blue-600 ${
-                          endTime ? " cursor-not-allowed" : "cursor-pointer"
+                          endTime ? "cursor-not-allowed opacity-50" : ""
                         }`}
-                        disabled={endTime}
+                        disabled={!!endTime} // Disable if endTime is not null
                         onClick={handleEndClick}
                       >
                         {loadingendtime ? (
@@ -715,9 +715,13 @@ const Servingss = () => {
                           ))}
                         </select>
 
+                        {/* Assign Bed Button */}
                         <button
-                          className="text-white px-6 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-500 whitespace-nowrap"
+                          className={`text-white px-6 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-500 whitespace-nowrap ${
+                            endTime ? "cursor-not-allowed opacity-50" : ""
+                          }`}
                           onClick={Assignbed}
+                          disabled={!!endTime} // Disable if endTime is not null
                         >
                           {loadingbed ? (
                             <div className="flex items-center gap-2">
@@ -779,20 +783,26 @@ const Servingss = () => {
               </button>
               <div className="flex space-x-4">
                 <button
-                  className="bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600"
+                  className={`bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600 ${
+                    endTime ? "cursor-not-allowed opacity-50" : ""
+                  }`}
                   onClick={() => {
                     setDischargeType('LAMA');
                     setShowDischargePopup(true);
                   }}
+                  disabled={!!endTime} // Disable if endTime is not null
                 >
                   {t("LAMA")}
                 </button>
                 <button
-                  className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+                  className={`bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 ${
+                    endTime ? "cursor-not-allowed opacity-50" : ""
+                  }`}
                   onClick={() => {
                     setDischargeType('DAMA');
                     setShowDischargePopup(true);
                   }}
+                  disabled={!!endTime} // Disable if endTime is not null
                 >
                   {t("DAMA")}
                 </button>
