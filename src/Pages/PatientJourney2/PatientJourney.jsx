@@ -94,6 +94,17 @@ function PatientJourney() {
         fetchAllRoles();
     }, [page, sortBy, sortOrder, filters, search]);
 
+     const calculateTotalHours = (treatmentEnded, registration) => {
+       const treatmentEndedtime = new Date(treatmentEnded);
+       const registrationtime = new Date(registration);
+       const totalTime = treatmentEndedtime - registrationtime; // Difference in milliseconds
+       const hours = Math.floor(totalTime / 3600000); // Convert to hours
+       const minutes = Math.floor((totalTime % 3600000) / 60000); // Convert to minutes
+       // If the total time is less than an hour, show "0 hrs"
+       const displayHours = hours > 0 ? `${hours} hrs` : "0 hrs";
+       return `${displayHours} ${minutes} min`; // Return formatted result
+     };
+
 
     const columns = [
       { name: "Name", uid: "name", sortable: true },
@@ -104,7 +115,7 @@ function PatientJourney() {
       { name: "Second Call", uid: "secondCallTime", sortable: true },
       { name: "Begin Time", uid: "beginTime", sortable: true },
       { name: "End Time", uid: "endTime", sortable: true },
-      
+      { name: "Total Hrs", uid: "totalHrs", sortable: true },
     ];
 
     const renderCell = (journey, columnKey) => {
@@ -122,24 +133,31 @@ function PatientJourney() {
         };
 
         switch (columnKey) {
-            case "name":
-                return <span>{journey?.patient?.name || ""}</span>;
-            case "mrnNumber":
-                return <span>{journey?.patient?.mrnNumber || ""}</span>;
-            case "firstCallTime":
-                return <span>{formatDate(journey?.firstCallTime)}</span>;
-            case "vitalTime":
-                return <span>{formatDate(journey?.vitalTime)}</span>;
-            case "assignDeptTime":
-                return <span>{formatDate(journey?.assignDeptTime)}</span>;
-            case "secondCallTime":
-                return <span>{formatDate(journey?.secondCallTime)}</span>;
-            case "beginTime":
-                return <span>{formatDate(journey?.beginTime)}</span>;
-            case "endTime":
-                return <span>{formatDate(journey?.endTime)}</span>;
-            default:
-                return null;
+          case "name":
+            return <span>{journey?.patient?.name || ""}</span>;
+          case "mrnNumber":
+            return <span>{journey?.patient?.mrnNumber || ""}</span>;
+          case "firstCallTime":
+            return <span>{formatDate(journey?.firstCallTime)}</span>;
+          case "vitalTime":
+            return <span>{formatDate(journey?.vitalTime)}</span>;
+          case "assignDeptTime":
+            return <span>{formatDate(journey?.assignDeptTime)}</span>;
+          case "secondCallTime":
+            return <span>{formatDate(journey?.secondCallTime)}</span>;
+          case "beginTime":
+            return <span>{formatDate(journey?.beginTime)}</span>;
+          case "endTime":
+            return <span>{formatDate(journey?.endTime)}</span>;
+          case "totalHrs":
+            return (
+              <span>
+                {calculateTotalHours(journey?.endTime, journey?.createdAt) ||
+                  ""}
+              </span>
+            );
+          default:
+            return null;
         }
     };
 
