@@ -225,8 +225,8 @@ const WaitingArea = () => {
                     {t("Patient Name")}
                   </label>
                   <input
-                  //disable this input not changible
-                  disabled
+                    //disable this input not changible
+                    disabled
                     type="text"
                     value={PatientName}
                     onChange={(e) => setPatientName(e.target.value)}
@@ -239,7 +239,7 @@ const WaitingArea = () => {
                     {t("Mobile Number")}
                   </label>
                   <input
-                  disabled
+                    disabled
                     type="text"
                     value={MobileNumber}
                     readOnly
@@ -251,7 +251,7 @@ const WaitingArea = () => {
                     {t("ID Number")}
                   </label>
                   <input
-                  disabled
+                    disabled
                     type="text"
                     value={IDNumber}
                     onChange={(e) => setIDNumber(e.target.value)}
@@ -264,7 +264,7 @@ const WaitingArea = () => {
                     {t("Nationality")}
                   </label>
                   <input
-                  disabled
+                    disabled
                     type="text"
                     value={Nationality}
                     readOnly
@@ -276,7 +276,7 @@ const WaitingArea = () => {
                     {t("Age")}
                   </label>
                   <input
-                  disabled
+                    disabled
                     type="text"
                     value={Age}
                     onChange={(e) => setAge(e.target.value)}
@@ -289,7 +289,7 @@ const WaitingArea = () => {
                     {t("Gender")}
                   </label>
                   <input
-                  disabled
+                    disabled
                     type="text"
                     value={Sex}
                     readOnly
@@ -301,7 +301,7 @@ const WaitingArea = () => {
                     {t("Blood Group")}
                   </label>
                   <input
-                  disabled
+                    disabled
                     type="text"
                     value={bloodGroup}
                     readOnly
@@ -313,7 +313,7 @@ const WaitingArea = () => {
                     {t("Birth Date")}
                   </label>
                   <input
-                  disabled
+                    disabled
                     type="text"
                     value={birthDate}
                     readOnly
@@ -325,7 +325,7 @@ const WaitingArea = () => {
                     {t("MRN Number")}
                   </label>
                   <input
-                  disabled
+                    disabled
                     type="text"
                     value={mrnNumber}
                     readOnly
@@ -337,7 +337,7 @@ const WaitingArea = () => {
                     {t("Chief Complaint")}
                   </label>
                   <input
-                  disabled
+                    disabled
                     type="text"
                     value={ChiefComplaint}
                     onChange={(e) => setChiefComplaint(e.target.value)}
@@ -405,7 +405,6 @@ const WaitingArea = () => {
                     />
                     <span className="ml-2 text-sm">{t("No")}</span>
                   </label>
-                 
                 </div>
               </div>
               <div className="mt-6 flex items-center space-x-4">
@@ -433,10 +432,11 @@ const WaitingArea = () => {
                 {callPatient ? t("Cancel Call Patient") : t("Call Patient")}
               </button>
               {/* /i want to their two button add his caption LAMA, DAMA/ */}
-              
 
               <div className="flex space-x-4">
-              
+                <button className="bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 px-6 py-2" onClick={() => window.close()}>
+                  Close
+                </button>
                 <button
                   className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600"
                   onClick={openBandPopup}
@@ -473,8 +473,6 @@ const WaitingArea = () => {
                 >
                   {t("Void")}
                 </button>
-              
-                
               </div>
             </div>
           </div>
@@ -654,7 +652,9 @@ const WaitingArea = () => {
       {showDischargePopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-lg font-bold mb-4">Confirm {dischargeType} Discharge</h2>
+            <h2 className="text-lg font-bold mb-4">
+              Confirm {dischargeType} Discharge
+            </h2>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Remarks
