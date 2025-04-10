@@ -158,10 +158,16 @@ const PatientMonitoring = () => {
                 patient.firstCallTime 
                   ? 'bg-yellow-100 border-l-4 border-yellow-500' 
                   : 'bg-green-100 border-l-4 border-green-500'
-              } rounded-lg p-4 text-center cursor-pointer`}
+              } rounded-lg p-4 text-center cursor-pointer relative`} // Added 'relative' for positioning
               onClick={() => window.open(`/waiting-area/${patient.id}`, '_blank')}
             >
-              <strong className="text-gray-700 mt-2">{patient.department ? patient.department?.deptname : "TR"?? "TR"}</strong>
+              {/* Green dot for "callPatient: true" */}
+              {patient.callPatient && (
+                <div className="absolute top-2 right-2 w-3 h-3 bg-green-500 rounded-full"></div>
+              )}
+              <strong className="text-gray-700 mt-2">
+                {patient.department ? patient.department?.deptname : "TR" ?? "TR"}
+              </strong>
               <h3 className={`${patient.firstCallTime ? 'text-yellow-600' : 'text-green-600'} font-bold`}>
                 {patient.ticketNumber}
               </h3>
