@@ -20,7 +20,7 @@ const getCardClass = (registrationDate, firstCallTime) => {
   }
   return firstCallTime
     ? "bg-yellow-100 border-l-4 border-yellow-500" // Yellow for first call
-    : "bg-green-100 border-l-4 border-green-500"; // Green for others
+    : "bg-yellow-100 border-l-4 border-yellow-500"; // Green for others
 };
 
 const PatientMonitoring = () => {
