@@ -444,12 +444,13 @@ const WaitingArea = () => {
                   {t("Print Band")}
                 </button>
                 <button
+                disabled={VitalSigns.BP === ""}
                   className={`text-white px-6 py-2 rounded-lg hover:bg-blue-600 ${
                     VitalSigns.BP ? "" : "opacity-50 cursor-not-allowed"
                   } ${
                     callPatient
                       ? "bg-blue-500 hover:bg-blue-600"
-                      : "bg-yellow-400 hover:bg-yellow-500"
+                      : "bg-blue-500 hover:bg-blue-600"
                   }`}
                   onClick={handleOpen}
                 >
