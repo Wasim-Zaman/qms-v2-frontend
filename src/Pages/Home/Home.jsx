@@ -21,6 +21,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardBody, CardFooter, Button } from "@nextui-org/react";
 import newRequest from "../../utils/newRequest";
+import Spinner from "../../components/spinner/spinner";
 
 const Home = () => {
     const { t, i18n } = useTranslation();
@@ -183,7 +184,11 @@ const Home = () => {
     };
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <Spinner />
+            </div>
+        );
     }
 
     return (
