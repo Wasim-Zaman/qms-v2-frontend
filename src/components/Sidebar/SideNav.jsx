@@ -43,6 +43,17 @@ function SideNav({ children }) {
     localStorage.setItem("sidebarOpen", JSON.stringify(isOpen));
   }, [isOpen]);
 
+  // Load roles from localStorage if available
+  useEffect(() => {
+    const storedRoles = localStorage.getItem("userRoles");
+    if (storedRoles) {
+      setUserRoles(JSON.parse(storedRoles));
+    } else {
+      // Only fetch if roles aren't available in localStorage
+      getAllRegisteredMembers();
+    }
+  }, []);
+
   const getTabClass = (path) => {
     return `flex items-center py-1 rounded transition-all duration-300 relative group cursor-pointer ${
       activeTab === path
@@ -197,10 +208,12 @@ function SideNav({ children }) {
   const logoutbutton = () => {
     localStorage.removeItem("userdata");
     localStorage.removeItem("sidebarOpen");
+    localStorage.removeItem("userRoles");
     navigate("/");
   };
   const accessToken = localStorage.getItem("accessToken");
   const storedUserData = JSON.parse(localStorage.getItem("userdata"));
+  
   const getAllRegisteredMembers = async () => {
     try {
       const res = await axios.get(`${baseUrl}/api/v1/user/${storedUserData?.user?.id || ""}`,{
@@ -209,15 +222,14 @@ function SideNav({ children }) {
         },
       });
       const response = res.data?.data?.roles?.map((role) => role.name) || [];
+      // Save roles to state
       setUserRoles(response);
+      // Save roles to localStorage
+      localStorage.setItem("userRoles", JSON.stringify(response));
     } catch (error) {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    getAllRegisteredMembers();
-  }, [storedUserData?.user?.id]);
 
   return (
     <>

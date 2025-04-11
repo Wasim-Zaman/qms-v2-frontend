@@ -155,6 +155,7 @@ const Home = () => {
             });
             const response = res.data?.data?.roles?.map((role) => role.name) || [];
             setUserRoles(response);
+            localStorage.setItem("userRoles", JSON.stringify(response));
         } catch (error) {
             console.log(error);
             navigate('/');
@@ -164,7 +165,13 @@ const Home = () => {
     };
 
     useEffect(() => {
-        getAllRegisteredMembers();
+        const storedRoles = localStorage.getItem("userRoles");
+        if (storedRoles) {
+            setUserRoles(JSON.parse(storedRoles));
+            setIsLoading(false);
+        } else {
+            getAllRegisteredMembers();
+        }
     }, []);
 
     const handleItemClick = (page) => {
