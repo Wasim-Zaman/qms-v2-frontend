@@ -1,10 +1,6 @@
 import { Spinner } from "@heroui/spinner";
 import {
     Button,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownTrigger,
     Input,
     Pagination,
     Table,
@@ -12,17 +8,16 @@ import {
     TableCell,
     TableColumn,
     TableHeader,
-    TableRow,
+    TableRow
 } from "@nextui-org/react";
 import React, { useEffect, useMemo, useState } from "react";
-import { BiSolidUserDetail } from "react-icons/bi";
 import { FaFileExcel, FaSearch, } from "react-icons/fa";
 import SideNav from "../../components/Sidebar/SideNav";
+import getTotalTimeString from "../../utils/Funtions/totalTimeCalculator";
 import newRequest from "../../utils/newRequest";
 import PatientJourneyDetails from "./PatientJourneyDetails";
 import PickerFilter from "./PickerFilter";
 import PickerSort from "./PickerSort";
-
 
 export const VerticalDotsIcon = ({ size = 24, width, height, ...props }) => {
     return (
@@ -109,6 +104,7 @@ function PatientJourney() {
     const columns = [
       { name: "Name", uid: "name", sortable: true },
       { name: "MRN Number", uid: "mrnNumber", sortable: true },
+      {name: "registration Date", uid: "registrationDate", sortable: true},
       { name: "First Call", uid: "firstCallTime", sortable: true },
       { name: "Vital", uid: "vitalTime", sortable: true },
       { name: "Assign Department", uid: "assignDeptTime", sortable: true },
@@ -137,6 +133,8 @@ function PatientJourney() {
             return <span>{journey?.patient?.name || ""}</span>;
           case "mrnNumber":
             return <span>{journey?.patient?.mrnNumber || ""}</span>;
+          case "registrationDate":
+            return <span>{formatDate(journey?.createdAt)}</span>;
           case "firstCallTime":
             return <span>{formatDate(journey?.firstCallTime)}</span>;
           case "vitalTime":
@@ -152,8 +150,8 @@ function PatientJourney() {
           case "totalHrs":
             return (
               <span>
-                {calculateTotalHours(journey?.endTime, journey?.createdAt) ||
-                  ""}
+                {getTotalTimeString(journey.registrationDate, journey.firstCallTime, journey.vitalTime, journey.assignDeptTime, journey.secondCallTime, journey.beginTime, journey.endTime) ||
+                ""}
               </span>
             );
           default:
