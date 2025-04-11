@@ -130,13 +130,11 @@ function PatientTable() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200 relative">
+                <tbody className="bg-white divide-y divide-gray-200">
                   {loading ? (
                     <tr>
-                      <td colSpan="8" className="text-center">
-                        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80">
-                          <Spinner />
-                        </div>
+                      <td colSpan="8" className="py-32 text-center">
+                        <Spinner />
                       </td>
                     </tr>
                   ) : (
