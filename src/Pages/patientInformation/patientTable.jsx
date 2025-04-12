@@ -156,6 +156,8 @@ function PatientTable() {
                           </td>
                         </tr>
                       ) : (
+
+                        
                         patients.map((patient) => (
                           <tr
                             key={patient.id}
