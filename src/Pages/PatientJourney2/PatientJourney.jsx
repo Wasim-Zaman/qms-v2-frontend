@@ -183,7 +183,7 @@ function PatientJourney() {
             isCompact
             showControls
             showShadow
-            color="primary"
+            color="secondary"
             page={page}
             total={pagination?.totalPages || 1}
             onChange={setPage}
@@ -256,7 +256,7 @@ function PatientJourney() {
                   th: "bg-green-50 text-green-800 font-semibold text-xs uppercase tracking-wide py-3 px-3",
                   td: "py-3 px-3 text-sm whitespace-nowrap text-gray-700",
                   tr: "border-b border-gray-100 hover:bg-green-50/30 transition-colors duration-150 cursor-pointer",
-                  tbody: "divide-y divide-gray-100",
+                  // tbody: "divide-y divide-gray-100",
                   table: "min-w-full"
                 }}
                 sortDescriptor={{
