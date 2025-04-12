@@ -2,12 +2,13 @@ import { Spinner } from "@nextui-org/react";
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { CiEdit } from "react-icons/ci";
-import { FaFilePdf, FaPlusCircle, FaSearch, FaTrash } from "react-icons/fa";
+import { FaFilePdf, FaPlusCircle, FaSearch, FaTrash,FaHistory } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2";
 import SideNav from '../../components/Sidebar/SideNav';
 import { baseUrl } from '../../utils/config';
 import newRequest from '../../utils/newRequest';
+import PatientJourneyDetails from "../PatientJourney2/PatientJourneyDetails";
 
 function PatientTable() {
   const [patients, setPatients] = useState([]);
@@ -16,6 +17,8 @@ function PatientTable() {
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
   const [total, setTotal] = useState(0);
+    const [Detailspatient, setDetailspatient] = useState(false);
+      const [selectedData, setselectedData] = useState(null);
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   
@@ -85,6 +88,11 @@ function PatientTable() {
       <Spinner color="success" size="lg" />
     </div>
   );
+
+   const handledetaild = (Roless) => {
+     setselectedData(Roless);
+     setDetailspatient(true);
+   };
   
   return (
     <>
@@ -92,7 +100,9 @@ function PatientTable() {
         <SideNav>
           <div className="w-11/12 mx-auto">
             <div className="bg-white shadow-lg rounded-lg p-6 mb-6 mt-8">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6">Patients Information</h2>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+                Patients Information
+              </h2>
               <div className="flex items-center mb-4 justify-between w-full">
                 <div className="relative w-80">
                   <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -110,7 +120,7 @@ function PatientTable() {
                   onClick={() => navigate("/patient-information")}
                 >
                   <FaPlusCircle />
-                  Register New Patient
+                  New Entry
                 </button>
               </div>
 
@@ -145,19 +155,18 @@ function PatientTable() {
                     <tbody className="bg-white divide-y divide-gray-100">
                       {loading ? (
                         <tr>
-                          <td colSpan="7">
-                            {renderLoadingContent()}
-                          </td>
+                          <td colSpan="7">{renderLoadingContent()}</td>
                         </tr>
                       ) : patients.length === 0 ? (
                         <tr>
-                          <td colSpan="7" className="py-8 text-center text-gray-500">
+                          <td
+                            colSpan="7"
+                            className="py-8 text-center text-gray-500"
+                          >
                             No patients found
                           </td>
                         </tr>
                       ) : (
-
-                        
                         patients.map((patient) => (
                           <tr
                             key={patient.id}
@@ -192,7 +201,8 @@ function PatientTable() {
                                 className="text-red-500 hover:text-red-600 transition-colors duration-200 cursor-pointer"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  const fileUrl = baseUrl + "/" + patient.ticket;
+                                  const fileUrl =
+                                    baseUrl + "/" + patient.ticket;
                                   window.open(fileUrl, "_blank");
                                 }}
                               />
@@ -208,7 +218,7 @@ function PatientTable() {
                                 ⋮
                               </button>
                               {dropdownVisible === patient.id && (
-                                <div className="absolute right-6 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg w-40 z-10 overflow-hidden">
+                                <div className="absolute right-6 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 overflow-hidden">
                                   <ul className="py-1">
                                     <li
                                       className="px-4 py-2 hover:bg-green-50 cursor-pointer flex items-center text-gray-700 transition-colors duration-150"
@@ -216,6 +226,15 @@ function PatientTable() {
                                     >
                                       <CiEdit className="text-green-600 mr-3" />{" "}
                                       <span className="text-sm">Edit</span>
+                                    </li>
+                                    <li
+                                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex my-auto"
+                                      onClick={() => handledetaild(patient)}
+                                    >
+                                      <FaHistory className="my-auto me-4" />{" "}
+                                      <p className="text-lg ">
+                                        Journey History
+                                      </p>
                                     </li>
                                     <li
                                       className="px-4 py-2 hover:bg-red-50 text-red-600 cursor-pointer flex items-center transition-colors duration-150"
@@ -235,7 +254,7 @@ function PatientTable() {
                   </table>
                 </div>
               </div>
-              
+
               <div className="flex justify-between items-center mt-6">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600">
@@ -254,7 +273,10 @@ function PatientTable() {
 
                       if (start > 1) {
                         pages.push(
-                          <span key="ellipsis-start" className="px-2 text-gray-500">
+                          <span
+                            key="ellipsis-start"
+                            className="px-2 text-gray-500"
+                          >
                             ...
                           </span>
                         );
@@ -270,8 +292,8 @@ function PatientTable() {
                             }}
                             className={`w-8 h-8 rounded-full ${
                               currentPage === i
-                                ? 'bg-green-600 text-white'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                ? "bg-green-600 text-white"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                             } flex items-center justify-center text-sm font-medium transition-colors duration-200`}
                           >
                             {i}
@@ -281,7 +303,10 @@ function PatientTable() {
 
                       if (end < totalPages) {
                         pages.push(
-                          <span key="ellipsis-end" className="px-2 text-gray-500">
+                          <span
+                            key="ellipsis-end"
+                            className="px-2 text-gray-500"
+                          >
                             ...
                           </span>
                         );
@@ -299,8 +324,8 @@ function PatientTable() {
                   <button
                     onClick={handlePreviousPage}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-1 ${
-                      currentPage === 1 
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                      currentPage === 1
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                         : "bg-green-600 text-white hover:bg-green-700"
                     }`}
                     disabled={currentPage === 1}
@@ -321,6 +346,13 @@ function PatientTable() {
                 </div>
               </div>
             </div>
+            {Detailspatient && (
+              <PatientJourneyDetails
+                isVisible={Detailspatient}
+                setVisibility={() => setDetailspatient(false)}
+                selectdataPatientJourney={selectedData}
+              />
+            )}
           </div>
         </SideNav>
       </div>
