@@ -262,6 +262,8 @@ function PatientJourney() {
               topContent={null}
               classNames={{
                 wrapper: "shadow-md rounded-lg bg-white mt-6 w-full",
+                td: "border-b border-divider py-4",
+                tr: "hover:bg-default-100",
               }}
               sortDescriptor={{
                 column: sortBy,

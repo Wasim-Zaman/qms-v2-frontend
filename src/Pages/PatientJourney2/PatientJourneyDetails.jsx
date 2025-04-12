@@ -48,10 +48,10 @@ const PatientJourneyDetails = ({ isVisible, setVisibility, selectdataPatientJour
   };
 
   const columns = [
-    { name: "Name", uid: "name", sortable: true },
-    { name: "MRN Number", uid: "mrnNumber", sortable: true },
-    { name: "Registration", uid: "registration", sortable: true },
-    { name: "Triage", uid: "firstCall", sortable: true },
+    { name: "NAME", uid: "name", sortable: true },
+    { name: "MRN NUMBER", uid: "mrnNumber", sortable: true },
+    { name: "REGISTRATION", uid: "registration", sortable: true },
+    { name: "TRIAGE", uid: "firstCall", sortable: true },
     { name: "Dept. Call", uid: "secondCall", sortable: true },
     { name: "Vital Signs", uid: "vitalSigns" },
     { name: "Department Assigned", uid: "departmentAssigned", sortable: true },
@@ -148,7 +148,9 @@ console.log(patientdatelenght, "patientsDateget?.length");
             aria-label="Patient Journey"
             // bottomContent={bottomContent}
             classNames={{
-              wrapper: "shadow-md rounded-lg bg-white mt-6 w-full ",
+              wrapper: "shadow-md rounded-lg bg-white mt-6 w-full  ",
+              td: "border-b border-divider py-4",
+              tr: "hover:bg-default-100",
             }}
           >
             <TableHeader columns={columns}>
@@ -156,7 +158,7 @@ console.log(patientdatelenght, "patientsDateget?.length");
                 <TableColumn
                   key={column.uid}
                   align={column.uid === "actions" ? "center" : "start"}
-                  className="bg-gray-50 text-gray-600"
+                  className="border-b border-divider uppercase "
                 >
                   {column.name}
                 </TableColumn>
