@@ -214,7 +214,7 @@ function PatientJourney() {
                     setSearch(value);
                     setPage(1); // Reset to first page when searching
                   }}
-                  className="w-full sm:max-w-[44%] border-gray-300 border py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full sm:max-w-[44%] rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                   placeholder="Search by patient name or MRN ..."
                   startContent={<FaSearch className="text-gray-400 me-2" />}
                 />

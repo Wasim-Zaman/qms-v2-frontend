@@ -108,7 +108,7 @@ const PrevouseJourney = ({ data }) => {
 
   const topContent = useMemo(
     () => (
-      <div className="flex flex-col gap-4 mb-4">
+      <div className="flex flex-col gap-4 mt-4">
         <div className="flex items-center">
           <Input
             isClearable
@@ -117,7 +117,7 @@ const PrevouseJourney = ({ data }) => {
               setSearch(value);
               setPage(1);
             }}
-            className="w-full sm:max-w-[44%] border-green-700 border py-1 rounded-lg focus:outline-none"
+            className="w-full sm:max-w-[44%] rounded-lg focus:outline-none"
             placeholder="Search by patient name or MRN ..."
             startContent={<FaSearch className="text-default-300 me-2" />}
           />
@@ -171,13 +171,15 @@ const PrevouseJourney = ({ data }) => {
   };
 
   return (
-    <div style={{ width: "100%", marginLeft: "20px" }}>
+    <div style={{ width: "98%",margin:'auto' }}>
       <Table
         aria-label="Previous Patient Journey"
         bottomContent={bottomContent}
         topContent={topContent}
+        topContentPlacement="outside"
+        bottomContentPlacement="outside"
         classNames={{
-          wrapper: "shadow-md rounded-lg bg-white mt-6 w-full",
+          wrapper: "shadow-md rounded-lg bg-white w-full",
           base: "h-[480px]",
           table: "min-h-[400px]",
         }}
@@ -192,7 +194,7 @@ const PrevouseJourney = ({ data }) => {
             <TableColumn
               key={column.uid}
               align={column.uid === "actions" ? "center" : "start"}
-              className="bg-gray-50 text-gray-600"
+              className="bg-gray-50 text-gray-600 uppercase"
             >
               {column.name}
             </TableColumn>
@@ -207,7 +209,7 @@ const PrevouseJourney = ({ data }) => {
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell className="whitespace-nowrap ">{renderCell(item, columnKey)}</TableCell>
               )}
             </TableRow>
           )}
