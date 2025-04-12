@@ -104,7 +104,7 @@ function PatientJourney() {
     const columns = [
       { name: "Name", uid: "name", sortable: true },
       { name: "MRN Number", uid: "mrnNumber", sortable: true },
-      {name: "registration Date", uid: "registrationDate", sortable: true},
+      {name: "Registration Date", uid: "registrationDate", sortable: true},
       { name: "First Call", uid: "firstCallTime", sortable: true },
       { name: "Vital", uid: "vitalTime", sortable: true },
       { name: "Assign Department", uid: "assignDeptTime", sortable: true },
@@ -192,7 +192,7 @@ function PatientJourney() {
             isCompact
             showControls
             showShadow
-            color="secondary"
+            color="primary"
             page={page}
             total={pagination?.totalPages || 1}
             onChange={setPage}
@@ -211,10 +211,10 @@ function PatientJourney() {
 
     return (
       <SideNav>
-        <div className="p-6 bg-gray-100 min-h-screen">
+        <div className="p-6 bg-gray-50 min-h-screen">
           <div className="bg-white shadow-lg rounded-lg p-6">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Patient Journey</h2>
-            <div className="flex flex-col gap-4 mb-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6">Patient Journey</h2>
+            <div className="flex flex-col gap-4 mb-8">
               <div className="flex flex-wrap items-center gap-4">
                 <Input
                   isClearable
@@ -259,7 +259,13 @@ function PatientJourney() {
               bottomContent={bottomContent}
               topContent={null}
               classNames={{
-                wrapper: "shadow-md rounded-lg bg-white mt-6 w-full",
+                wrapper: "shadow-md rounded-lg bg-white mt-6 w-full overflow-hidden",
+                base: "overflow-x-auto",
+                th: "bg-green-50 text-green-800 font-semibold text-xs uppercase tracking-wide py-3 px-3",
+                td: "py-3 px-3 text-sm whitespace-nowrap text-gray-700",
+                tr: "border-b border-gray-100 hover:bg-green-50/30 transition-colors duration-150 cursor-pointer",
+                tbody: "divide-y divide-gray-100",
+                table: "min-w-full"
               }}
               sortDescriptor={{
                 column: sortBy,
@@ -272,7 +278,6 @@ function PatientJourney() {
                   <TableColumn
                     key={column.uid}
                     align={column.uid === "actions" ? "center" : "start"}
-                    className="bg-gray-50 text-gray-600 font-semibold text-sm uppercase tracking-wide"
                   >
                     {column.name}
                   </TableColumn>
@@ -281,24 +286,24 @@ function PatientJourney() {
               <TableBody
                 items={AllRoles}
                 emptyContent={
-                  <div className="text-center text-gray-500 py-6">
+                  <div className="text-center text-gray-500 py-8">
                     No Patient Journey found
                   </div>
                 }
                 isLoading={loading}
                 loadingContent={
-                  <div className="flex justify-center items-center py-6">
-                    <Spinner color="secondary" size="lg" />
+                  <div className="flex justify-center items-center py-8">
+                    <Spinner color="success" size="lg" />
                   </div>
                 }
               >
                 {(item) => (
                   <TableRow
                     key={item.id}
-                    className="hover:bg-gray-100 transition-colors duration-200"
+                    onClick={() => handledetaild(item)}
                   >
                     {(columnKey) => (
-                      <TableCell className="text-sm text-gray-700">
+                      <TableCell>
                         {renderCell(item, columnKey)}
                       </TableCell>
                     )}

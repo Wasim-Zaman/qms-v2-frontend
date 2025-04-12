@@ -1,28 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import Registration from "../../Images/Registration.png";
-import CentralWaitingArea from "../../Images/Central Waiting Area.png";
-import LocationAssignment from "../../Images/Location Assignment.png";
-import KPI from "../../Images/KPI.png";
-import Location from "../../Images/Location.png";
-import logo from "../../Images/logo.png";
-import LocationWaitingArea from "../../Images/Location Waiting Area.png";
-import MasterData from "../../Images/masterdata.png";
-import Usersicon from "../../Images/users.png";
-import TVscreeen from "../../Images/TV screen.jpg";
-import Rolesicon from "../../Images/Roles.png";
-import Department from "../../Images/Department.png";
-import Beds from "../../Images/Beds.jpg";
-import logout from "../../Images/logout.png";
-import PatientJourneyicon from "../../Images/PatientJourneyicon.png";
 import axios from "axios";
+import { Menu, X } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate } from "react-router-dom";
+import Beds from "../../Images/Beds.jpg";
+import CentralWaitingArea from "../../Images/Central Waiting Area.png";
+import Department from "../../Images/Department.png";
+import KPI from "../../Images/KPI.png";
+import LocationAssignment from "../../Images/Location Assignment.png";
+import logo from "../../Images/logo.png";
+import logout from "../../Images/logout.png";
+import MasterData from "../../Images/masterdata.png";
+import PatientJourneyicon from "../../Images/PatientJourneyicon.png";
+import Registration from "../../Images/Registration.png";
+import Rolesicon from "../../Images/Roles.png";
+import TVscreeen from "../../Images/TV screen.jpg";
+import Usersicon from "../../Images/users.png";
 import { baseUrl } from "../../utils/config";
-import newRequest from "../../utils/newRequest";
-import { useQuery } from "react-query";
-import UpdatedRoles from "../../Pages/MasterData/Roles/UpdatedRoles";
 import DepartmentWaitingList from "../DepartmentWaitingList/DepartmentWaitingList";
+
 function SideNav({ children }) {
   const { t, i18n } = useTranslation();
   const [Masterdatashow, setMasterdatashow] = useState(false);
@@ -55,10 +51,10 @@ function SideNav({ children }) {
   }, []);
 
   const getTabClass = (path) => {
-    return `flex items-center py-1 rounded transition-all duration-300 relative group cursor-pointer ${
+    return `flex items-center py-2.5 px-4 rounded-lg transition-all duration-200 relative group cursor-pointer ${
       activeTab === path
-        ? "bg-[#13BA8885] text-black"
-        : "hover:bg-gray-100 text-gray-700"
+        ? "bg-green-100 text-green-800 font-medium"
+        : "hover:bg-gray-50 text-gray-700"
     } ${
       i18n.language === "ar"
         ? "pr-3 pl-4 justify-end"
@@ -75,7 +71,9 @@ function SideNav({ children }) {
       label: `${t("Registered Patients")}`,
       path: "/patient-table",
       icon: (
-        <img src={Registration} alt="Registered Patients" className="w-6 h-6" />
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-green-50">
+          <img src={Registration} alt="Registered Patients" className="w-5 h-5" />
+        </div>
       ),
       requiredRole: "Registered Patients",
     },
@@ -83,23 +81,27 @@ function SideNav({ children }) {
       label: `${t("Triage Waiting List")}`,
       path: "/monitoring",
       icon: (
-        <img
-          src={CentralWaitingArea}
-          alt="Triage Waiting List"
-          className="w-6 h-6"
-        />
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-yellow-50">
+          <img
+            src={CentralWaitingArea}
+            alt="Triage Waiting List"
+            className="w-5 h-5"
+          />
+        </div>
       ),
       requiredRole: "Triage Waiting List",
     },
     {
       label: `${t("Department Waiting List")}`,
-      path: "/location-assignment",
+      path: "#",
       icon: (
-        <img
-          src={LocationAssignment}
-          alt="Location Assignment"
-          className="w-6 h-6"
-        />
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50">
+          <img
+            src={LocationAssignment}
+            alt="Location Assignment"
+            className="w-5 h-5"
+          />
+        </div>
       ),
       requiredRole: "Department Waiting List",
     },
@@ -107,53 +109,78 @@ function SideNav({ children }) {
       label: `${t("MasterData")}`,
       path: "#",
       icon: (
-        <img src={MasterData} alt="Location Waiting Area" className="w-6 h-6" />
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-50">
+          <img src={MasterData} alt="MasterData" className="w-5 h-5" />
+        </div>
       ),
       requiredRole: "MasterData",
       subItems: [
-        // {
-        //   label: `${t("Location")}`,
-        //   path: "/location",
-        //   icon: <img src={Location} alt="Location" className="w-6 h-6" />,
-        // },
         {
           label: `${t("Users")}`,
           path: "/users",
-          icon: <img src={Usersicon} alt="Users" className="w-6 h-6" />,
+          icon: (
+            <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-green-50">
+              <img src={Usersicon} alt="Users" className="w-4 h-4" />
+            </div>
+          ),
         },
         {
           label: `${t("Roles")}`,
           path: "/Roles",
-          icon: <img src={Rolesicon} alt="Roles" className="w-6 h-6" />,
+          icon: (
+            <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-green-50">
+              <img src={Rolesicon} alt="Roles" className="w-4 h-4" />
+            </div>
+          ),
         },
         {
           label: `${t("Beds")}`,
           path: "/Beds",
-          icon: <img src={Beds} alt="Beds" className="w-6 h-6" />,
+          icon: (
+            <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-green-50">
+              <img src={Beds} alt="Beds" className="w-4 h-4" />
+            </div>
+          ),
         },
         {
           label: `${t("Department")}`,
           path: "/Department",
-          icon: <img src={Department} alt="Department" className="w-6 h-6" />,
+          icon: (
+            <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-green-50">
+              <img src={Department} alt="Department" className="w-4 h-4" />
+            </div>
+          ),
         },
       ],
     },
     {
       label: `${t("TV Screen")}`,
       path: "/patient-display",
-      icon: <img src={TVscreeen} alt="TV Screen" className="w-6 h-6" />,
+      icon: (
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-red-50">
+          <img src={TVscreeen} alt="TV Screen" className="w-5 h-5" />
+        </div>
+      ),
       requiredRole: "TV Screen",
     },
     {
       label: `${t("KPI")}`,
       path: "/kpi",
-      icon: <img src={KPI} alt="KPI" className="w-6 h-6" />,
+      icon: (
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50">
+          <img src={KPI} alt="KPI" className="w-5 h-5" />
+        </div>
+      ),
       requiredRole: "KPI",
     },
     {
       label: `${t("Patient Journey")}`,
       path: "/PatientJourney",
-      icon: <img src={PatientJourneyicon} alt="KPI" className="w-6 h-6" />,
+      icon: (
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-green-50">
+          <img src={PatientJourneyicon} alt="Patient Journey" className="w-5 h-5" />
+        </div>
+      ),
       requiredRole: "Patient Journey",
     },
   ];
@@ -162,37 +189,6 @@ function SideNav({ children }) {
     const storedUserData = localStorage.getItem("userdata");
     return storedUserData ? JSON.parse(storedUserData) : null;
   });
-
-  // const {
-  //   data: userRoles = [],
-  // } = useQuery(
-  //   ["userRoles", userData?.user?.id],
-  //   () => fetchUserRoles(userData?.user?.id),
-  //   {
-  //     enabled: !!userData?.user?.id,
-  //   }
-  // );
-
-  //   const fetchUserRoles = async (userId) => {
-  //     if (!userId) return [];
-  //     try {
-  //       const response = await newRequest.get(`/api/v1/user/${userId}`);
-  //       return response.data?.data?.roles?.map((role) => role.name) || [];
-  //     } catch (error) {
-  //       return [];
-  //     }
-  //   };
-
-  //    useEffect(() => {
-  //      const handleStorageChange = (e) => {
-  //        if (e.key === "userdata") {
-  //          setUserData(e.newValue ? JSON.parse(e.newValue) : null);
-  //        }
-  //      };
-
-  //      window.addEventListener("storage", handleStorageChange);
-  //      return () => window.removeEventListener("storage", handleStorageChange);
-  //    }, []);
 
   const [showPopup, setShowPopup] = useState(false);
   const handleItemClick = (item) => {
@@ -211,6 +207,7 @@ function SideNav({ children }) {
     localStorage.removeItem("userRoles");
     navigate("/");
   };
+  
   const accessToken = localStorage.getItem("accessToken");
   const storedUserData = JSON.parse(localStorage.getItem("userdata"));
   
@@ -234,15 +231,16 @@ function SideNav({ children }) {
   return (
     <>
       <div className="p-0 lg:h-screen">
-        <div className="body-content ">
+        <div className="body-content">
           <nav
             className={`fixed top-0 transition-all duration-300 ease-in-out bg-white lg:mt-0 mt-16 bottom-0 flex flex-col shadow-lg overflow-hidden z-50 ${
               i18n.language === "ar" ? "right-0" : "left-0"
             } ${isOpen ? "w-[280px]" : "w-[80px]"}`}
             id="sidenav"
           >
+            {/* Logo Section */}
             <div
-              className={`flex items-center w-full px-4 pt-4 pb-4 border-b border-gray-200 justify-center `}
+              className="flex items-center w-full px-4 py-5 border-b border-gray-100 justify-center bg-green-50"
             >
               <div
                 className={`transition-opacity duration-300 justify-center cursor-pointer ${
@@ -258,21 +256,42 @@ function SideNav({ children }) {
                 }`}
                 onClick={() => navigate("/Home")}
               >
-                <img src={logo} alt="logo" className="w-10 h-10 " />
+                <img src={logo} alt="logo" className="w-10 h-10" />
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto">
-              <ul className="p-4 space-y-6">
+            {/* Profile Section */}
+            {isOpen && (
+              <div className="px-4 py-4 border-b border-gray-100">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                    <span className="text-green-700 font-bold text-lg">
+                      {userData?.user?.name?.charAt(0) || "U"}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-800 truncate">
+                      {userData?.user?.name || "User"}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      {userData?.user?.email || "admin@example.com"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Navigation Items */}
+            <div className="flex-1 overflow-y-auto py-4">
+              <ul className="px-3 space-y-1">
                 {sidebarItems.map((item, index) =>
                   userRoles.includes(item.requiredRole) ? (
-                    <li key={index} className="my-2">
+                    <li key={index} className="mb-1">
                       <div
-                        // className="flex px-3 cursor-pointer my-2"
-                        className={`flex items-center py-1 rounded transition-all duration-300 relative group cursor-pointer ${
+                        className={`flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group cursor-pointer ${
                           activeTab === item.path
-                            ? "bg-[#13BA8885] text-black"
-                            : "hover:bg-gray-100 text-gray-700"
+                            ? "bg-green-100 text-green-800 font-medium"
+                            : "hover:bg-gray-50 text-gray-700"
                         } ${
                           i18n.language === "ar"
                             ? "pr-3 pl-4 justify-end"
@@ -282,42 +301,50 @@ function SideNav({ children }) {
                       >
                         {item.icon}
                         <span
-                          className={`font-medium text-gray-700 whitespace-nowrap transition-all duration-300 ms-3 ${
+                          className={`font-medium whitespace-nowrap transition-all duration-300 ms-3 ${
                             !isOpen && "opacity-0 w-0 overflow-hidden"
                           }`}
                         >
                           {item.label}
                         </span>
-                        {item.subItems && (
+                        {item.subItems && isOpen && (
                           <div
                             className={`${
                               i18n.language === "ar"
                                 ? "mr-auto ml-2"
-                                : "ml-auto mr-2"
+                                : "ml-auto mr-0"
                             }`}
                           >
-                            {Masterdatashow ? (
-                              <i className="fas fa-chevron-up"></i>
-                            ) : (
-                              <i className="fas fa-chevron-down"></i>
-                            )}
+                            <div className="w-5 h-5 flex items-center justify-center rounded-full bg-gray-100">
+                              {Masterdatashow ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                                </svg>
+                              ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>
 
-                      {item.subItems && Masterdatashow && (
-                        <ul className="ms-3 space-y-3">
+                      {item.subItems && Masterdatashow && isOpen && (
+                        <ul className="ml-6 mt-1 space-y-1">
                           {item.subItems.map((subItem, subIndex) => (
                             <li
                               key={subIndex}
                               onClick={() => navigate(subItem.path)}
-                              className={getTabClass(subItem.path)}
+                              className={`flex items-center py-2 px-3 rounded-lg transition-all duration-200 relative group cursor-pointer ${
+                                activeTab === subItem.path
+                                  ? "bg-green-50 text-green-700 font-medium"
+                                  : "hover:bg-gray-50 text-gray-600"
+                              }`}
                             >
                               {subItem.icon}
                               <span
-                                className={`font-medium text-gray-700 whitespace-nowrap transition-all duration-300 ms-3 mt-2 ${
-                                  !isOpen && "opacity-0 w-0 overflow-hidden"
-                                }`}
+                                className="font-medium text-sm whitespace-nowrap transition-all duration-300 ms-2"
                               >
                                 {subItem.label}
                               </span>
@@ -328,61 +355,72 @@ function SideNav({ children }) {
                     </li>
                   ) : null
                 )}
-                <li
-                  onClick={logoutbutton}
-                  className="flex mt-10  cursor-pointer"
-                >
-                  <img
-                    src={logout}
-                    alt="Registered Patients"
-                    className="w-6 h-6"
-                  />
-                  <span
-                    className={`font-medium text-gray-700 whitespace-nowrap transition-all duration-300 ms-3 ${
-                      !isOpen && "opacity-0 w-0 overflow-hidden"
-                    }`}
-                  >
-                    {t("Log-out")}
-                  </span>
-                </li>
               </ul>
+            </div>
+
+            {/* Logout Section */}
+            <div className="border-t border-gray-100 px-4 py-4">
+              <div
+                onClick={logoutbutton}
+                className="flex items-center py-2 px-3 rounded-lg cursor-pointer hover:bg-red-50 text-gray-700 transition-all duration-200"
+              >
+                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-red-50">
+                  <img src={logout} alt="Logout" className="w-5 h-5" />
+                </div>
+                <span
+                  className={`font-medium whitespace-nowrap transition-all duration-300 ms-3 ${
+                    !isOpen && "opacity-0 w-0 overflow-hidden"
+                  }`}
+                >
+                  {t("Log-out")}
+                </span>
+              </div>
             </div>
           </nav>
         </div>
+
+        {/* Main Content */}
         <div
           className={`mx-auto transition-all duration-300 content-wrapper ${
             isOpen ? "lg:ml-[280px]" : "lg:ml-[80px]"
           }`}
         >
-          <section className="sticky top-0 z-40 px-3 py-3 bg-white shadow-sm flex my-auto">
-            <button
-              onClick={toggleSidebar}
-              className="me-5 rounded-lg hover:bg-gray-100"
-            >
-              {!isOpen ? (
-                <Menu size={24} className="text-gray-600" />
-              ) : (
-                <X size={24} className="text-gray-600" />
-              )}
-            </button>
-            {/* <h2 className="text-xl font-semibold text-gray-800">
-              {t(
-                location.pathname.substring(1).replace(/-/g, " ").toUpperCase() ===
-                  "PATIENT TABLE"
-                  ? "Registered Patients"
-                  : location.pathname.substring(1).replace(/-/g, " ").toUpperCase()
-              ) || "Dashboard"}
-            </h2> */}
+          {/* Top navbar */}
+          <section className="sticky top-0 z-40 px-4 py-3 bg-white shadow-sm flex items-center justify-between">
+            <div className="flex items-center">
+              <button
+                onClick={toggleSidebar}
+                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+              >
+                {!isOpen ? (
+                  <Menu size={22} className="text-gray-600" />
+                ) : (
+                  <X size={22} className="text-gray-600" />
+                )}
+              </button>
+              <div className="ml-4">
+                <h2 className="text-lg font-semibold text-gray-800">
+                  {t(
+                    location.pathname.substring(1).replace(/-/g, " ").charAt(0).toUpperCase() +
+                    location.pathname.substring(1).replace(/-/g, " ").slice(1).toLowerCase() || "Dashboard"
+                  )}
+                </h2>
+              </div>
+            </div>
           </section>
-          {children}
+
+          {/* Page content */}
+          <div className="main-content">
+            {children}
+          </div>
         </div>
       </div>
+
+      {/* Department Waiting List popup */}
       {showPopup && (
         <DepartmentWaitingList
           isVisible={showPopup}
           setVisibility={() => setShowPopup(false)}
-          // refreshroles={fetchAllRoles}
-          // selectdataroles={selectedDepartment}
         />
       )}
     </>

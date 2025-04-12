@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import Button from "@mui/material/Button";
-import { useTranslation } from "react-i18next";
-import CloseIcon from "@mui/icons-material/Close";
-import newRequest from "../../utils/newRequest";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
+import { FaHospital, FaSearch, FaTimes } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import newRequest from "../../utils/newRequest";
 
 const DepartmentWaitingList = ({
     isVisible,
@@ -12,12 +11,13 @@ const DepartmentWaitingList = ({
     selectdatauser,
     refreshuser,
 }) => {
-
     const navigate = useNavigate();
     const [departments, setDepartments] = useState([]);
     const [selectedDeptId, setSelectedDeptId] = useState(null);
     const { t } = useTranslation();
     const modalRef = useRef(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    
     if (!isVisible) return null;
 
     useEffect(() => {
@@ -33,7 +33,13 @@ const DepartmentWaitingList = ({
         fetchDepartments();
     }, []);
 
-    const departmentserach = () => {
+    const filteredDepartments = departments.filter(
+        (dept) => 
+            dept.deptcode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (dept.deptname && dept.deptname.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
+    const departmentSearch = () => {
         if (selectedDeptId) {
             navigate(`/Department-monitoring/${selectedDeptId}`);
             setVisibility(false);
@@ -42,71 +48,113 @@ const DepartmentWaitingList = ({
         }
     };
 
+    // Handle click outside modal to close
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (modalRef.current && !modalRef.current.contains(event.target)) {
+                setVisibility(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [setVisibility]);
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
             {/* Modal Container */}
             <div
-                ref={modalRef} // Attach the ref to the modal
-                className="bg-white rounded-lg shadow-lg w-full max-w-lg"
+                ref={modalRef}
+                className="bg-white rounded-lg shadow-xl w-full max-w-lg transform transition-all duration-300 ease-in-out"
             >
                 {/* Modal Header */}
-                <div
-                    className="flex items-center justify-between px-4 py-3"
-                    style={{ backgroundColor: "#5B4DF5" }}
-                >
-                    <h2 className="text-white text-xl font-semibold">
-                        {t("Assign Location")}
+                <div className="bg-green-600 rounded-t-lg px-6 py-4 flex items-center justify-between">
+                    <h2 className="text-white text-xl font-semibold flex items-center gap-2">
+                        <FaHospital className="text-white" />
+                        {t("Department Waiting List")}
                     </h2>
-                    <div className="flex items-center gap-4">
-                        <button onClick={() => setVisibility(false)}>
-                            <CloseIcon style={{ color: "white" }} />
-                        </button>
-                    </div>
+                    <button 
+                        onClick={() => setVisibility(false)}
+                        className="p-1.5 rounded-full bg-green-700 hover:bg-green-800 text-white transition-colors duration-200 flex items-center justify-center"
+                    >
+                        <FaTimes size={16} />
+                    </button>
                 </div>
 
                 {/* Modal Content */}
                 <div className="p-6">
-                    <div className="flex flex-col gap-4">
-                        <div>
-                            <label
-                                htmlFor="Location"
-                                className="text-lg font-medium text-gray-700"
-                            >
-                                {t("Department Code")}
-                            </label>
-                            <select
-                                value={selectedDeptId}
-                                onChange={(e) => setSelectedDeptId(e.target.value)}
-                                className="border border-gray-300 p-2 w-full mb-4 py-3"
-                            >
-                                <option value="">Select Department</option>
-                                {departments.map((department) => (
-                                    <option
-                                        key={department.tblDepartmentID}
-                                        value={department.tblDepartmentID}
-                                    >
-                                        {department.deptcode}
-                                    </option>
-                                ))}
-                            </select>
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            {t("Search Department")}
+                        </label>
+                        <div className="relative">
+                            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <input
+                                type="text"
+                                placeholder="Search by department code or name..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                            />
                         </div>
+                    </div>
+
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            {t("Select Department")}
+                        </label>
+                        
+                        {filteredDepartments.length === 0 ? (
+                            <div className="p-4 text-center text-gray-500 border border-gray-200 rounded-lg bg-gray-50">
+                                No departments found matching your search
+                            </div>
+                        ) : (
+                            <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-lg">
+                                {filteredDepartments.map((department) => (
+                                    <div
+                                        key={department.tblDepartmentID}
+                                        onClick={() => setSelectedDeptId(department.tblDepartmentID)}
+                                        className={`flex items-center p-3 border-b last:border-b-0 cursor-pointer ${
+                                            selectedDeptId === department.tblDepartmentID
+                                                ? "bg-green-50 border-l-4 border-green-500"
+                                                : "hover:bg-gray-50"
+                                        }`}
+                                    >
+                                        <div className="flex-1">
+                                            <div className="font-medium text-gray-800">{department.deptcode}</div>
+                                            {department.deptname && (
+                                                <div className="text-sm text-gray-500">{department.deptname}</div>
+                                            )}
+                                        </div>
+                                        {selectedDeptId === department.tblDepartmentID && (
+                                            <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                                                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Action Buttons */}
                     <div className="flex justify-end gap-4 mt-6">
                         <button
-                            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-gray-400"
                             onClick={() => setVisibility(false)}
+                            className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors duration-200 font-medium"
                         >
                             {t("Cancel")}
                         </button>
-                        <Button
-                            variant="contained"
-                            style={{ backgroundColor: "#13BA88", color: "#ffffff" }}
-                            onClick={departmentserach}
+                        <button
+                            onClick={departmentSearch}
+                            className="px-5 py-2.5 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors duration-200 font-medium flex items-center gap-2"
                         >
-                            {t("Department")}
-                        </Button>
+                            <FaSearch size={14} /> {t("View Department")}
+                        </button>
                     </div>
                 </div>
             </div>
