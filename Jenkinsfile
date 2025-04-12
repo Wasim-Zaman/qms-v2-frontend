@@ -36,7 +36,8 @@ pipeline {
          stage('Create web.config') {
             steps {
                 script {
-                    def webConfigContent = '''<configuration>
+                    def webConfigContent = '''<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
   <system.webServer>
     <rewrite>
       <rules>
