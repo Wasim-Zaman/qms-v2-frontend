@@ -1,155 +1,221 @@
-import React, { useEffect, useState } from "react";
+import { Button, Spinner as NextUISpinner } from "@nextui-org/react";
 import axios from "axios";
-import { baseUrl } from "../../utils/config";
-import SideNav from "../../components/Sidebar/SideNav";
-import Registration from "../../Images/Registration.png";
-import CentralWaitingArea from "../../Images/Central Waiting Area.png";
-import LocationAssignment from "../../Images/Location Assignment.png";
-import KPI from "../../Images/KPI.png";
-import Location from "../../Images/Location.png";
-import logo from "../../Images/logo.png";
-import LocationWaitingArea from "../../Images/Location Waiting Area.png";
-import MasterData from "../../Images/masterdata.png";
-import Usersicon from "../../Images/users.png";
-import TVscreeen from "../../Images/TV screen.jpg";
-import Rolesicon from "../../Images/Roles.png";
-import Department from "../../Images/Department.png";
-import Beds from "../../Images/Beds.jpg";
-import logout from "../../Images/logout.png";
-import PatientJourneyicon from "../../Images/PatientJourneyicon.png";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { FaChevronRight, FaDoorOpen, FaUser } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Card, CardBody, CardFooter, Button } from "@nextui-org/react";
-import newRequest from "../../utils/newRequest";
-import Spinner from "../../components/spinner/spinner";
+import SideNav from "../../components/Sidebar/SideNav";
+import Beds from "../../Images/Beds.jpg";
+import CentralWaitingArea from "../../Images/Central Waiting Area.png";
+import Department from "../../Images/Department.png";
+import KPI from "../../Images/KPI.png";
+import LocationAssignment from "../../Images/Location Assignment.png";
+import MasterData from "../../Images/masterdata.png";
+import PatientJourneyicon from "../../Images/PatientJourneyicon.png";
+import Registration from "../../Images/Registration.png";
+import Rolesicon from "../../Images/Roles.png";
+import TVscreeen from "../../Images/TV screen.jpg";
+import Usersicon from "../../Images/users.png";
+import { baseUrl } from "../../utils/config";
 
 const Home = () => {
     const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
     const [userRoles, setUserRoles] = useState([]);
+    const [userData, setUserData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [expandedItem, setExpandedItem] = useState(null);
+    const [todayStats, setTodayStats] = useState({
+        waitingPatients: 0,
+        calledPatients: 0,
+        assignedPatients: 0,
+        dischargedPatients: 0
+    });
 
     const sidebarItems = [
         {
+            id: 'registered',
             label: `${t("Registered Patients")}`,
             path: "/patient-table",
             icon: (
                 <img
                     src={Registration}
                     alt="Registered Patients"
-                    className="w-20 h-20"
+                    className="w-16 h-16 object-contain"
                 />
             ),
+            description: "Register new patients and manage patient information",
             requiredRole: "Registered Patients",
-            color: "bg-gradient-to-br from-blue-50 to-blue-100",
+            color: "bg-blue-50 border-blue-200 hover:bg-blue-100",
+            borderColor: "border-l-4 border-blue-500",
+            iconBg: "bg-blue-100"
         },
         {
+            id: 'triage',
             label: `${t("Triage Waiting List")}`,
             path: "/monitoring",
             icon: (
                 <img
                     src={CentralWaitingArea}
                     alt="Triage Waiting List"
-                    className="w-20 h-20"
+                    className="w-16 h-16 object-contain"
                 />
             ),
+            description: "Monitor and manage patients in the triage waiting area",
             requiredRole: "Triage Waiting List",
-            color:
-                "bg-gradient-to-r from-teal-500/10 via-emerald-500/10 to-cyan-500/10 hover:from-teal-500/20 hover:via-emerald-500/20 hover:to-cyan-500/20 border-l-4 border-teal-500 transition-all duration-300 shadow-[inset_0_2px_20px_rgba(0,0,0,0.02)]",
+            color: "bg-green-50 border-green-200 hover:bg-green-100",
+            borderColor: "border-l-4 border-green-500",
+            iconBg: "bg-green-100"
         },
         {
+            id: 'department',
             label: `${t("Department Waiting List")}`,
-            path: "/location-assignment",
+            path: "#",
             icon: (
                 <img
                     src={LocationAssignment}
-                    alt="Location Assignment"
-                    className="w-20 h-20"
+                    alt="Department Waiting List"
+                    className="w-16 h-16 object-contain"
                 />
             ),
+            description: "View and manage department-specific waiting lists",
             requiredRole: "Department Waiting List",
-            color: "bg-gradient-to-br from-green-50 to-green-100",
+            color: "bg-teal-50 border-teal-200 hover:bg-teal-100",
+            borderColor: "border-l-4 border-teal-500",
+            iconBg: "bg-teal-100"
         },
         {
+            id: 'masterdata',
             label: `${t("MasterData")}`,
             path: "#",
             icon: (
                 <img
                     src={MasterData}
-                    alt="Location Waiting Area"
-                    className="w-20 h-20"
+                    alt="Master Data"
+                    className="w-16 h-16 object-contain"
                 />
             ),
+            description: "Manage system configuration and reference data",
             requiredRole: "MasterData",
-            color: "bg-gradient-to-br from-yellow-50 to-yellow-100",
+            color: "bg-amber-50 border-amber-200 hover:bg-amber-100",
+            borderColor: "border-l-4 border-amber-500",
+            iconBg: "bg-amber-100",
             subItems: [
-                // {
-                //   label: `${t("Location")}`,
-                //   path: "/location",
-                //   icon: <img src={Location} alt="Location" className="w-20 h-20" />,
-                // },
                 {
+                    id: 'users',
                     label: `${t("Users")}`,
                     path: "/users",
-                    icon: <img src={Usersicon} alt="Users" className="w-20 h-20" />,
-                    color: "bg-gradient-to-br from-teal-50 to-teal-100",
+                    icon: <img src={Usersicon} alt="Users" className="w-16 h-16 object-contain" />,
+                    description: "Manage system users and their profiles",
+                    color: "bg-indigo-50 border-indigo-200 hover:bg-indigo-100",
+                    borderColor: "border-l-4 border-indigo-500",
+                    iconBg: "bg-indigo-100"
                 },
                 {
+                    id: 'roles',
                     label: `${t("Roles")}`,
                     path: "/Roles",
-                    icon: <img src={Rolesicon} alt="Roles" className="w-20 h-20" />,
-                    color: "bg-gradient-to-br from-orange-50 to-orange-100",
+                    icon: <img src={Rolesicon} alt="Roles" className="w-16 h-16 object-contain" />,
+                    description: "Configure user roles and permissions",
+                    color: "bg-violet-50 border-violet-200 hover:bg-violet-100",
+                    borderColor: "border-l-4 border-violet-500",
+                    iconBg: "bg-violet-100"
                 },
                 {
+                    id: 'beds',
                     label: `${t("Beds")}`,
                     path: "/Beds",
-                    icon: <img src={Beds} alt="Beds" className="w-20 h-20" />,
-                     color: "bg-gradient-to-br from-blue-50 to-blue-100",
+                    icon: <img src={Beds} alt="Beds" className="w-16 h-16 object-contain" />,
+                    description: "Manage hospital beds and their assignments",
+                    color: "bg-sky-50 border-sky-200 hover:bg-sky-100",
+                    borderColor: "border-l-4 border-sky-500",
+                    iconBg: "bg-sky-100"
                 },
                 {
+                    id: 'department-config',
                     label: `${t("Department")}`,
                     path: "/Department",
                     icon: (
-                        <img src={Department} alt="Department" className="w-20 h-20" />
+                        <img src={Department} alt="Department" className="w-16 h-16 object-contain" />
                     ),
+                    description: "Configure departments and their settings",
+                    color: "bg-emerald-50 border-emerald-200 hover:bg-emerald-100",
+                    borderColor: "border-l-4 border-emerald-500",
+                    iconBg: "bg-emerald-100"
                 },
             ],
         },
         {
+            id: 'tvscreen',
             label: `${t("TV Screen")}`,
             path: "/patient-display",
-            icon: <img src={TVscreeen} alt="TV Screen" className="w-20 h-20" />,
+            icon: <img src={TVscreeen} alt="TV Screen" className="w-16 h-16 object-contain" />,
+            description: "Manage display screens in waiting areas",
             requiredRole: "TV Screen",
-            color: "bg-gradient-to-br from-red-50 to-red-100",
+            color: "bg-rose-50 border-rose-200 hover:bg-rose-100",
+            borderColor: "border-l-4 border-rose-500",
+            iconBg: "bg-rose-100"
         },
         {
+            id: 'kpi',
             label: `${t("KPI")}`,
             path: "/kpi",
-            icon: <img src={KPI} alt="KPI" className="w-20 h-20" />,
+            icon: <img src={KPI} alt="KPI" className="w-16 h-16 object-contain" />,
+            description: "View performance metrics and analytics",
             requiredRole: "KPI",
-            color: "bg-gradient-to-br from-purple-50 to-purple-100",
+            color: "bg-purple-50 border-purple-200 hover:bg-purple-100",
+            borderColor: "border-l-4 border-purple-500",
+            iconBg: "bg-purple-100"
         },
         {
+            id: 'patientjourney',
             label: `${t("Patient Journey")}`,
             path: "/PatientJourney",
-            icon: <img src={PatientJourneyicon} alt="KPI" className="w-20 h-20" />,
+            icon: <img src={PatientJourneyicon} alt="Patient Journey" className="w-16 h-16 object-contain" />,
+            description: "Track and visualize patient journey throughout the system",
             requiredRole: "Patient Journey",
-            color: "bg-gradient-to-br from-indigo-50 to-indigo-100",
+            color: "bg-cyan-50 border-cyan-200 hover:bg-cyan-100",
+            borderColor: "border-l-4 border-cyan-500",
+            iconBg: "bg-cyan-100"
         },
     ];
+
+    const fetchDashboardStats = async () => {
+        try {
+            const accessToken = localStorage.getItem("accessToken");
+            // You can replace this with actual API calls to get real stats
+            const waitingResponse = await axios.get(`${baseUrl}/api/v1/patients/by-state`, {
+                headers: { Authorization: `Bearer ${accessToken}` }
+            });
+            
+            // Set stats based on API response
+            if (waitingResponse.data.success) {
+                setTodayStats({
+                    waitingPatients: waitingResponse.data.data.waiting?.length || 0,
+                    calledPatients: 0, // Replace with actual data from API
+                    assignedPatients: waitingResponse.data.data.inProgress?.length || 0,
+                    dischargedPatients: 0 // Replace with actual data from API
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching dashboard stats:", error);
+        }
+    };
 
     const getAllRegisteredMembers = async () => {
         const storedUserData = JSON.parse(localStorage.getItem("userdata"));
         const accessToken = localStorage.getItem("accessToken");
+        
         if (!storedUserData?.user?.id) {
             navigate('/');
             return;
         }
 
+        setUserData(storedUserData);
+
         try {
-            const res = await axios.get(`${baseUrl}/api/v1/user/${storedUserData.user.id}`,{
+            const res = await axios.get(`${baseUrl}/api/v1/user/${storedUserData.user.id}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -157,8 +223,11 @@ const Home = () => {
             const response = res.data?.data?.roles?.map((role) => role.name) || [];
             setUserRoles(response);
             localStorage.setItem("userRoles", JSON.stringify(response));
+            
+            // Fetch dashboard stats after roles are loaded
+            fetchDashboardStats();
         } catch (error) {
-            console.log(error);
+            console.error("Error fetching user roles:", error);
             navigate('/');
         } finally {
             setIsLoading(false);
@@ -169,6 +238,8 @@ const Home = () => {
         const storedRoles = localStorage.getItem("userRoles");
         if (storedRoles) {
             setUserRoles(JSON.parse(storedRoles));
+            setUserData(JSON.parse(localStorage.getItem("userdata")));
+            fetchDashboardStats();
             setIsLoading(false);
         } else {
             getAllRegisteredMembers();
@@ -177,189 +248,256 @@ const Home = () => {
 
     const handleItemClick = (page) => {
         if (page.subItems) {
-            setExpandedItem(expandedItem === page.label ? null : page.label);
-        } else if (userRoles.includes(page.requiredRole)) {
+            setExpandedItem(expandedItem === page.id ? null : page.id);
+        } else if (page.path !== "#" && userRoles.includes(page.requiredRole)) {
             navigate(page.path);
         }
     };
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <Spinner />
+            <div className="flex items-center justify-center min-h-screen bg-gray-50">
+                <NextUISpinner color="success" size="lg" />
             </div>
         );
     }
 
-    return (
-        <>
-            <SideNav>
-                <div className="min-h-screen bg-green-100 p-8">
-                    <div className="bg-white shadow-lg rounded-lg p-6">
-                        <div className="flex w-full flex-col gap-4 p-6">
-                            {/* Header Section with Back Button */}
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center gap-4">
-                                    <div>
-                                        <h1 className="text-2xl font-bold text-navy-700">
-                                            User Roles
-                                        </h1>
-                                        <p className="text-sm text-gray-500">
-                                            Manage user roles and permissions to control access within the system. Assign specific roles to users to define their level of access and responsibilities.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {sidebarItems.map((page) => {
-                                    const hasAccess = userRoles.includes(page.requiredRole);
-                                    const isExpanded = expandedItem === page.label;
-                                    return (
-                                        <>
-                                            <Card
-                                                key={page.title}
-                                                isPressable
-                                                onPress={() => handleItemClick(page)}
-                                                className={`border-none shadow-md transition-shadow ${hasAccess
-                                                    ? `${page.color} hover:shadow-xl cursor-pointer`
-                                                    : "bg-gray-100 opacity-75 cursor-not-allowed"
-                                                    }`}
-                                            >
-                                                <CardBody className="overflow-visible p-6">
-                                                    <div className="flex flex-col items-center gap-4">
-                                                        {page.icon}
-                                                        <div className="text-center">
-                                                            <h2 className="text-xl font-semibold text-navy-700 my-4">
-                                                                {page.label}
-                                                            </h2>
-                                                        </div>
-                                                    </div>
-                                                </CardBody>
-                                                <CardFooter className="justify-center pb-6">
-                                                    <Button
-                                                        onPress={() => handleItemClick(page)}
-                                                        disabled={!hasAccess}
-                                                        className="bg-[#13BA8885] text-black shadow-lg hover:bg-navy-700"
-                                                        size="sm"
-                                                        endContent={hasAccess && (
-                                                            <svg
-                                                                className="w-4 h-4"
-                                                                fill="none"
-                                                                stroke="currentColor"
-                                                                viewBox="0 0 24 24"
-                                                            >
-                                                                <path
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                    strokeWidth={2}
-                                                                    d="M9 5l7 7-7 7"
-                                                                />
-                                                            </svg>
-                                                        )}
-                                                    >
-                                                        {hasAccess
-                                                            ? "Manage Content"
-                                                            : "Access Denied"}
-                                                    </Button>
-                                                </CardFooter>
-                                            </Card>
-                                            {isExpanded && page.subItems && (
-                                                <div className="col-span-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pl-3">
-                                                    {page.subItems.map((subItem) => {
-                                                        const subHasAccess = userRoles.includes(subItem.requiredRole) || hasAccess;
+    const getAccessibleModules = () => {
+        return sidebarItems.filter(item => userRoles.includes(item.requiredRole));
+    };
 
-                                                        return (
-                                                          <Card
-                                                            key={subItem.label}
-                                                            isPressable={
-                                                              subHasAccess
-                                                            }
-                                                            onPress={() =>
-                                                              subHasAccess &&
-                                                              navigate(
-                                                                subItem.path
-                                                              )
-                                                            }
-                                                            className={`ml-8 border-none shadow-md transition-shadow ${
-                                                              subHasAccess
-                                                                ? `${subItem.color} hover:shadow-xl cursor-pointer`
-                                                                : "bg-gray-100 opacity-75 cursor-not-allowed"
-                                                            }`}
-                                                          >
-                                                            <CardBody className="overflow-visible p-6">
-                                                              <div className="flex flex-col items-center gap-4">
-                                                                <div
-                                                                  className={
-                                                                    !subHasAccess
-                                                                      ? "grayscale"
-                                                                      : ""
-                                                                  }
-                                                                >
-                                                                  {subItem.icon}
-                                                                </div>
-                                                                <div className="text-center">
-                                                                  <h2
-                                                                    className={`text-lg font-semibold ${
-                                                                      subHasAccess
-                                                                        ? "text-navy-700"
-                                                                        : "text-gray-400"
-                                                                    } my-4`}
-                                                                  >
-                                                                    {
-                                                                      subItem.label
-                                                                    }
-                                                                  </h2>
-                                                                </div>
-                                                              </div>
-                                                            </CardBody>
-                                                            <CardFooter className="justify-center pb-6">
-                                                              <Button
-                                                                onClick={() =>
-                                                                  navigate(
-                                                                    subItem.path
-                                                                  )
-                                                                }
-                                                                className="bg-[#13BA8885] text-black shadow-lg hover:bg-navy-700"
-                                                                size="sm"
-                                                                endContent={
-                                                                  hasAccess && (
-                                                                    <svg
-                                                                      className="w-4 h-4"
-                                                                      fill="none"
-                                                                      stroke="currentColor"
-                                                                      viewBox="0 0 24 24"
-                                                                    >
-                                                                      <path
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                        strokeWidth={
-                                                                          2
-                                                                        }
-                                                                        d="M9 5l7 7-7 7"
-                                                                      />
-                                                                    </svg>
-                                                                  )
-                                                                }
-                                                              >
-                                                                {hasAccess
-                                                                  ? "Manage Content"
-                                                                  : "Access Denied"}
-                                                              </Button>
-                                                            </CardFooter>
-                                                          </Card>
-                                                        );
-                                                    })}
-                                                </div>
-                                            )}
-                                        </>
-                                    );
-                                })}
+    const accessibleModules = getAccessibleModules();
+
+    return (
+        <SideNav>
+            <div className="min-h-screen bg-gray-50 p-6">
+                {/* Welcome Section */}
+                <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+                    <div className="md:flex">
+                        <div className="md:flex-shrink-0 bg-green-600 md:w-48 flex items-center justify-center p-6">
+                            <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center">
+                                <FaUser className="text-green-600 text-5xl" />
+                            </div>
+                        </div>
+                        <div className="p-8">
+                            <div className="uppercase tracking-wide text-sm text-green-600 font-semibold">
+                                {t("Welcome back")}
+                            </div>
+                            <h1 className="mt-1 text-2xl font-medium text-gray-800 leading-tight">
+                                {userData?.user?.name || "User"}
+                            </h1>
+                            <p className="mt-2 text-gray-600">
+                                {userData?.user?.email || ""}
+                            </p>
+                            <div className="mt-4 flex flex-wrap gap-2">
+                                {userRoles.map((role, index) => (
+                                    <span 
+                                        key={index}
+                                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                                    >
+                                        {role}
+                                    </span>
+                                ))}
                             </div>
                         </div>
                     </div>
                 </div>
-            </SideNav>
-        </>
+
+                {/* Stats Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+                        <div className="flex items-center">
+                            <div className="bg-green-100 rounded-full p-3 mr-4">
+                                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600">Waiting Patients</p>
+                                <h3 className="text-2xl font-bold text-gray-800">{todayStats.waitingPatients}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-yellow-500">
+                        <div className="flex items-center">
+                            <div className="bg-yellow-100 rounded-full p-3 mr-4">
+                                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600">Called Patients</p>
+                                <h3 className="text-2xl font-bold text-gray-800">{todayStats.calledPatients}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+                        <div className="flex items-center">
+                            <div className="bg-blue-100 rounded-full p-3 mr-4">
+                                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600">Assigned Patients</p>
+                                <h3 className="text-2xl font-bold text-gray-800">{todayStats.assignedPatients}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500">
+                        <div className="flex items-center">
+                            <div className="bg-purple-100 rounded-full p-3 mr-4">
+                                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600">Discharged Today</p>
+                                <h3 className="text-2xl font-bold text-gray-800">{todayStats.dischargedPatients}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Your Modules Section */}
+                <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <svg className="w-6 h-6 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                        </svg>
+                        {t("Your Modules")}
+                    </h2>
+                    
+                    {accessibleModules.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {accessibleModules.map((module) => (
+                                <div
+                                    key={module.id}
+                                    className={`rounded-xl shadow-sm ${module.color} ${module.borderColor} transition-all duration-200 overflow-hidden`}
+                                >
+                                    <div 
+                                        className="p-6 cursor-pointer"
+                                        onClick={() => handleItemClick(module)}
+                                    >
+                                        <div className="flex items-center mb-4">
+                                            <div className={`w-16 h-16 rounded-lg ${module.iconBg} flex items-center justify-center mr-4`}>
+                                                {module.icon}
+                                            </div>
+                                            <h3 className="text-lg font-semibold text-gray-800">{module.label}</h3>
+                                        </div>
+                                        <p className="text-sm text-gray-600 mb-4">{module.description}</p>
+                                        <div className="flex justify-end">
+                                            <Button
+                                                size="sm"
+                                                className="bg-green-600 text-white hover:bg-green-700"
+                                                endContent={<FaChevronRight size={12} />}
+                                                onClick={() => module.path !== "#" && navigate(module.path)}
+                                            >
+                                                {module.subItems ? 'View Options' : 'Access Module'}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    
+                                    {expandedItem === module.id && module.subItems && (
+                                        <div className="px-6 pb-6 pt-0 border-t border-gray-200">
+                                            <div className="grid grid-cols-1 gap-4 mt-4">
+                                                {module.subItems.map((subItem) => (
+                                                    <div
+                                                        key={subItem.id}
+                                                        className={`p-4 rounded-lg ${subItem.color} ${subItem.borderColor} flex items-center cursor-pointer transition-all duration-200`}
+                                                        onClick={() => navigate(subItem.path)}
+                                                    >
+                                                        <div className={`w-10 h-10 rounded-lg ${subItem.iconBg} flex items-center justify-center mr-3`}>
+                                                            {React.cloneElement(subItem.icon, { className: 'w-6 h-6' })}
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <h4 className="text-sm font-medium text-gray-800">{subItem.label}</h4>
+                                                            <p className="text-xs text-gray-600">{subItem.description}</p>
+                                                        </div>
+                                                        <FaChevronRight className="text-gray-400" size={12} />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center p-8 bg-gray-50 rounded-lg">
+                            <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            <h3 className="text-lg font-medium text-gray-700 mb-2">No Access Modules Found</h3>
+                            <p className="text-gray-500">You don't have access to any modules. Please contact your administrator.</p>
+                        </div>
+                    )}
+                </div>
+
+                {/* All Available Modules */}
+                <div className="bg-white rounded-xl shadow-md p-6">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <svg className="w-6 h-6 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        {t("All System Modules")}
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {sidebarItems.map((module) => {
+                            const hasAccess = userRoles.includes(module.requiredRole);
+                            return (
+                                <div
+                                    key={module.id}
+                                    className={`rounded-xl shadow-sm transition-all duration-200 overflow-hidden ${
+                                        hasAccess 
+                                            ? `${module.color} ${module.borderColor}` 
+                                            : "bg-gray-100 border-l-4 border-gray-300"
+                                    }`}
+                                >
+                                    <div className="p-6">
+                                        <div className="flex items-center mb-4">
+                                            <div className={`w-16 h-16 rounded-lg ${hasAccess ? module.iconBg : 'bg-gray-200'} flex items-center justify-center mr-4 ${!hasAccess && 'opacity-50'}`}>
+                                                {module.icon}
+                                            </div>
+                                            <div>
+                                                <h3 className={`text-lg font-semibold ${hasAccess ? 'text-gray-800' : 'text-gray-500'}`}>
+                                                    {module.label}
+                                                </h3>
+                                                {!hasAccess && (
+                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-200 text-gray-800">
+                                                        <FaDoorOpen className="mr-1" size={10} /> No Access
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <p className={`text-sm ${hasAccess ? 'text-gray-600' : 'text-gray-500'} mb-4`}>
+                                            {module.description}
+                                        </p>
+                                        <div className="flex justify-end">
+                                            <Button
+                                                size="sm"
+                                                className={hasAccess 
+                                                    ? "bg-green-600 text-white hover:bg-green-700" 
+                                                    : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                                                }
+                                                endContent={hasAccess && <FaChevronRight size={12} />}
+                                                onClick={() => hasAccess && handleItemClick(module)}
+                                                disabled={!hasAccess}
+                                            >
+                                                {hasAccess ? (module.subItems ? 'View Options' : 'Access Module') : 'No Access'}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+        </SideNav>
     );
 };
 

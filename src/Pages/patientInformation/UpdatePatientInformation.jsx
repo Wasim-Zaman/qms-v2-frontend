@@ -1,16 +1,16 @@
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import axios from "axios";
+import { countries } from "countries-list";
 import React, { useEffect, useState } from "react";
-import SideNav from "../../components/Sidebar/SideNav";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { baseUrl } from "../../utils/config";
-import Spinner from "../../components/spinner/spinner";
-import toast from "react-hot-toast";
-import axios from "axios";
-import { countries } from "countries-list";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
 import { useNavigate, useParams } from "react-router-dom";
+import SideNav from "../../components/Sidebar/SideNav";
+import Spinner from "../../components/spinner/spinner";
+import { baseUrl } from "../../utils/config";
 import newRequest from "../../utils/userRequest";
 
 const countryList = Object.entries(countries).map(([code, country]) => ({
