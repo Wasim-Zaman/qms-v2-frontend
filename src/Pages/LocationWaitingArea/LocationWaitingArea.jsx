@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import SideNav from "../../components/Sidebar/SideNav";
+import React, { useEffect, useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { useParams } from "react-router-dom";
+import SideNav from "../../components/Sidebar/SideNav";
 import { baseUrl } from "../../utils/config";
 
 const LocationWaitingArea = () => {

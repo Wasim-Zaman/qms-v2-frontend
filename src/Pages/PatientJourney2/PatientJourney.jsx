@@ -15,7 +15,6 @@ import { FaFileExcel, FaSearch, } from "react-icons/fa";
 import SideNav from "../../components/Sidebar/SideNav";
 import getTotalTimeString from "../../utils/Funtions/totalTimeCalculator";
 import newRequest from "../../utils/newRequest";
-import PatientJourneyDetails from "./PatientJourneyDetails";
 import PickerFilter from "./PickerFilter";
 import PickerSort from "./PickerSort";
 
@@ -246,62 +245,64 @@ function PatientJourney() {
               </div>
             </div>
 
-            <Table
-              aria-label="Patient Journey"
-              bottomContent={bottomContent}
-              topContent={null}
-              classNames={{
-                wrapper: "shadow-md rounded-lg bg-white mt-6 w-full overflow-hidden",
-                base: "overflow-x-auto",
-                th: "bg-green-50 text-green-800 font-semibold text-xs uppercase tracking-wide py-3 px-3",
-                td: "py-3 px-3 text-sm whitespace-nowrap text-gray-700",
-                tr: "border-b border-gray-100 hover:bg-green-50/30 transition-colors duration-150 cursor-pointer",
-                tbody: "divide-y divide-gray-100",
-                table: "min-w-full"
-              }}
-              sortDescriptor={{
-                column: sortBy,
-                direction: sortOrder === "asc" ? "ascending" : "descending",
-              }}
-              onSortChange={handleColumnSort}
-            >
-              <TableHeader columns={columns}>
-                {(column) => (
-                  <TableColumn
-                    key={column.uid}
-                    align={column.uid === "actions" ? "center" : "start"}
-                  >
-                    {column.name}
-                  </TableColumn>
-                )}
-              </TableHeader>
-              <TableBody
-                items={AllRoles}
-                emptyContent={
-                  <div className="text-center text-gray-500 py-8">
-                    No Patient Journey found
-                  </div>
-                }
-                isLoading={loading}
-                loadingContent={
-                  <div className="flex justify-center items-center py-8">
-                    <Spinner color="success" size="lg" />
-                  </div>
-                }
+            <div className="overflow-x-auto" style={{ maxWidth: '100%' }}>
+              <Table
+                aria-label="Patient Journey"
+                bottomContent={bottomContent}
+                topContent={null}
+                classNames={{
+                  wrapper: "shadow-md rounded-lg bg-white mt-6 w-full min-w-[1200px]", // Set a minimum width
+                  base: "min-w-full table-fixed", // Use table-fixed for better column control
+                  th: "bg-green-50 text-green-800 font-semibold text-xs uppercase tracking-wide py-3 px-3",
+                  td: "py-3 px-3 text-sm whitespace-nowrap text-gray-700",
+                  tr: "border-b border-gray-100 hover:bg-green-50/30 transition-colors duration-150 cursor-pointer",
+                  tbody: "divide-y divide-gray-100",
+                  table: "min-w-full"
+                }}
+                sortDescriptor={{
+                  column: sortBy,
+                  direction: sortOrder === "asc" ? "ascending" : "descending",
+                }}
+                onSortChange={handleColumnSort}
               >
-                {(item) => (
-                  <TableRow
-                    key={item.id}
-                  >
-                    {(columnKey) => (
-                      <TableCell>
-                        {renderCell(item, columnKey)}
-                      </TableCell>
-                    )}
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                <TableHeader columns={columns}>
+                  {(column) => (
+                    <TableColumn
+                      key={column.uid}
+                      align={column.uid === "actions" ? "center" : "start"}
+                    >
+                      {column.name}
+                    </TableColumn>
+                  )}
+                </TableHeader>
+                <TableBody
+                  items={AllRoles}
+                  emptyContent={
+                    <div className="text-center text-gray-500 py-8">
+                      No Patient Journey found
+                    </div>
+                  }
+                  isLoading={loading}
+                  loadingContent={
+                    <div className="flex justify-center items-center py-8">
+                      <Spinner color="success" size="lg" />
+                    </div>
+                  }
+                >
+                  {(item) => (
+                    <TableRow
+                      key={item.id}
+                    >
+                      {(columnKey) => (
+                        <TableCell>
+                          {renderCell(item, columnKey)}
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </div>
       </SideNav>

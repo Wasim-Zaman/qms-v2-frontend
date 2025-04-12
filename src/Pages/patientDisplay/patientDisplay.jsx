@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useQuery } from "react-query";
 import Spinner from "../../components/spinner/spinner";
 import newRequest from "../../utils/newRequest";
-import { useQuery } from "react-query";
 
 const PatientDisplay = () => {
   const { isLoading, data: patients = [], error } = useQuery("fetchAllMegaMenus", async () => {
