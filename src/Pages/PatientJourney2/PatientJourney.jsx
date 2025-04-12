@@ -213,7 +213,9 @@ function PatientJourney() {
       <SideNav>
         <div className="p-6 bg-gray-100 min-h-screen">
           <div className="bg-white shadow-lg rounded-lg p-6">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Patient Journey</h2>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+              Patient Journey
+            </h2>
             <div className="flex flex-col gap-4 mb-6">
               <div className="flex flex-wrap items-center gap-4">
                 <Input
@@ -298,7 +300,7 @@ function PatientJourney() {
                     className="hover:bg-gray-100 transition-colors duration-200"
                   >
                     {(columnKey) => (
-                      <TableCell className="text-sm text-gray-700">
+                      <TableCell className="text-sm text-gray-700 whitespace-nowrap">
                         {renderCell(item, columnKey)}
                       </TableCell>
                     )}

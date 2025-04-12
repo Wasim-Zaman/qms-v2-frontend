@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaFilePdf, FaTrash } from "react-icons/fa";
+import { FaFilePdf, FaTrash, FaHistory } from "react-icons/fa";
 import { CiEdit } from "react-icons/ci";
 import Swal from "sweetalert2";
 import toast from 'react-hot-toast';
@@ -8,6 +8,7 @@ import SideNav from '../../components/Sidebar/SideNav';
 import Spinner from '../../components/spinner/spinner';
 import newRequest from '../../utils/newRequest';
 import { baseUrl } from '../../utils/config';
+import PatientJourneyDetails from '../PatientJourney2/PatientJourneyDetails';
 
 function PatientTable() {
   const [patients, setPatients] = useState([]);
@@ -15,6 +16,8 @@ function PatientTable() {
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [Detailspatient, setDetailspatient] = useState(false);
+  const [selectedData, setselectedData] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [total, setTotal] = useState(0);
   const navigate = useNavigate();
@@ -75,6 +78,11 @@ function PatientTable() {
     setCurrentPage((prev) => prev + 1);
     setLoading(true);
   };
+
+  const handledetaild = (Roless) => {
+    setselectedData(Roless);
+    setDetailspatient(true);
+  };
   return (
     <>
       <div className="font-[sans-serif] ">
@@ -97,7 +105,7 @@ function PatientTable() {
                   className=" px-5 py-2.5 rounded-lg text-sm tracking-wider font-medium border border-green-700 outline-none bg-transparent hover:bg-green-700 text-green-700 hover:text-white transition-all duration-300"
                   onClick={() => navigate("/patient-information")}
                 >
-                  Register New Patient
+                  New Entry
                 </button>
               </div>
             </div>
@@ -218,7 +226,7 @@ function PatientTable() {
                               ⋮
                             </button>
                             {dropdownVisible === patient.id && (
-                              <div className="absolute bg-white border rounded shadow-lg w-40 z-10">
+                              <div className="absolute bg-white border rounded shadow-lg  z-10">
                                 <ul>
                                   <li
                                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex my-auto"
@@ -226,6 +234,13 @@ function PatientTable() {
                                   >
                                     <CiEdit className="my-auto me-4" />{" "}
                                     <p className="text-lg ">Edit</p>
+                                  </li>
+                                  <li
+                                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex my-auto"
+                                    onClick={() => handledetaild(patient)}
+                                  >
+                                    <FaHistory className="my-auto me-4" />{" "}
+                                    <p className="text-lg ">Journey History</p>
                                   </li>
                                   <li
                                     className="px-4 py-2 hover:bg-gray-100 text-red-600 cursor-pointer flex my-auto"
@@ -279,8 +294,8 @@ function PatientTable() {
                           }}
                           className={`w-8 h-8 rounded-full ${
                             currentPage === i
-                              ? 'bg-green-500 text-white'
-                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                              ? "bg-green-500 text-white"
+                              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                           } flex items-center justify-center text-sm font-medium transition-colors duration-200`}
                         >
                           {i}
@@ -329,6 +344,13 @@ function PatientTable() {
               </div>
             </div>
           </div>
+          {Detailspatient && (
+            <PatientJourneyDetails
+              isVisible={Detailspatient}
+              setVisibility={() => setDetailspatient(false)}
+              selectdataPatientJourney={selectedData}
+            />
+          )}
         </SideNav>
       </div>
     </>
