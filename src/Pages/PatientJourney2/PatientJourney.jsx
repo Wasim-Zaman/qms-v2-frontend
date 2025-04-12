@@ -48,15 +48,7 @@ function PatientJourney() {
     const [sortBy, setSortBy] = useState("createdAt");
     const [sortOrder, setSortOrder] = useState("desc");
     const [filters, setFilters] = useState({});
-    const [Detailspatient, setDetailspatient] = useState(false);
     
-    const [selectedData, setselectedData] = useState(null);
-
-        const handledetaild = (Roless) => {
-            setselectedData(Roless);
-          setDetailspatient(true);
-        };
-
     const fetchAllRoles = async () => {
         setLoading(true);
         try {
@@ -300,7 +292,6 @@ function PatientJourney() {
                 {(item) => (
                   <TableRow
                     key={item.id}
-                    onClick={() => handledetaild(item)}
                   >
                     {(columnKey) => (
                       <TableCell>
@@ -313,13 +304,6 @@ function PatientJourney() {
             </Table>
           </div>
         </div>
-        {Detailspatient && (
-          <PatientJourneyDetails
-            isVisible={Detailspatient}
-            setVisibility={() => setDetailspatient(false)}
-            selectdataPatientJourney={selectedData}
-          />
-        )}
       </SideNav>
     );
 }
