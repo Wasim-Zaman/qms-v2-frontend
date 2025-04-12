@@ -259,6 +259,8 @@ function PatientJourney() {
             <Table
               aria-label="Patient Journey"
               bottomContent={bottomContent}
+              topContentPlacement="outside"
+              bottomContentPlacement="outside"
               topContent={null}
               classNames={{
                 wrapper: "shadow-md rounded-lg bg-white mt-6 w-full",
