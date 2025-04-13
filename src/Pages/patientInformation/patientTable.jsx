@@ -1,8 +1,8 @@
-import { Spinner } from "@nextui-org/react";
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner } from "@nextui-org/react";
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { CiEdit } from "react-icons/ci";
-import { FaFilePdf, FaPlusCircle, FaSearch, FaTrash,FaHistory } from "react-icons/fa";
+import { FaCalendarAlt, FaFilePdf, FaHistory, FaPlusCircle, FaSearch, FaTrash } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2";
 import SideNav from '../../components/Sidebar/SideNav';
@@ -89,9 +89,10 @@ function PatientTable() {
     </div>
   );
 
-   const handledetaild = (Roless) => {
-     setselectedData(Roless);
+   const handledetaild = (patient) => {
+     setselectedData(patient);
      setDetailspatient(true);
+     setDropdownVisible(null);
    };
   
   return (
@@ -228,13 +229,13 @@ function PatientTable() {
                                       <span className="text-sm">Edit</span>
                                     </li>
                                     <li
-                                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex my-auto"
+                                      className="px-4 py-2 hover:bg-indigo-50 cursor-pointer flex items-center text-gray-700 transition-colors duration-150"
                                       onClick={() => handledetaild(patient)}
                                     >
-                                      <FaHistory className="my-auto me-4" />{" "}
-                                      <p className="text-lg ">
-                                        Journey History
-                                      </p>
+                                      <div className="flex items-center w-full">
+                                        <FaHistory className="text-indigo-600 mr-3" />
+                                        <span className="text-sm font-medium">Journey History</span>
+                                      </div>
                                     </li>
                                     <li
                                       className="px-4 py-2 hover:bg-red-50 text-red-600 cursor-pointer flex items-center transition-colors duration-150"
@@ -346,13 +347,44 @@ function PatientTable() {
                 </div>
               </div>
             </div>
-            {Detailspatient && (
-              <PatientJourneyDetails
-                isVisible={Detailspatient}
-                setVisibility={() => setDetailspatient(false)}
-                selectdataPatientJourney={selectedData}
-              />
-            )}
+            <Modal
+              isOpen={Detailspatient}
+              onClose={() => setDetailspatient(false)}
+              size="3xl"
+              scrollBehavior="inside"
+            >
+              <ModalContent>
+                <ModalHeader className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <FaCalendarAlt className="text-green-600" />
+                    <h3 className="text-lg font-bold">
+                      Patient Journey History
+                    </h3>
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    {selectedData?.name} - ID: {selectedData?.idNumber}
+                  </p>
+                </ModalHeader>
+                <ModalBody>
+                  {selectedData && (
+                    <PatientJourneyDetails
+                      isVisible={true}
+                      setVisibility={() => {}}
+                      selectdataPatientJourney={selectedData}
+                    />
+                  )}
+                </ModalBody>
+                <ModalFooter>
+                  <Button 
+                    color="danger" 
+                    variant="light"
+                    onPress={() => setDetailspatient(false)}
+                  >
+                    Close
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
           </div>
         </SideNav>
       </div>
