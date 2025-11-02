@@ -1,6 +1,6 @@
 
 
-let mainUrl = 'https://qmsapi.groute.online';
+let mainUrl = 'https://hqmsapi.gtrack.online';
 // let mainUrl = 'http://localhost:3000';  
 
 
