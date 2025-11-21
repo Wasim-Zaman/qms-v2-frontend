@@ -351,25 +351,25 @@ const WaitingArea = () => {
               </h5>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {[
-                  "BP",
-                  "HR",
-                  "TEMP",
-                  "RR",
-                  "SPO2",
-                  "RBS",
-                  "Height",
-                  "Weight",
-                ].map((field) => (
+                  { field: "BP", unit: "mmHg" },
+                  { field: "HR", unit: "bpm" },
+                  { field: "TEMP", unit: "°C" },
+                  { field: "RR", unit: "/min" },
+                  { field: "SPO2", unit: "%" },
+                  { field: "RBS", unit: "mg/dL" },
+                  { field: "Height", unit: "cm" },
+                  { field: "Weight", unit: "kg" },
+                ].map(({ field, unit }) => (
                   <div key={field}>
                     <label className="text-sm font-medium text-gray-700">
-                      {t(field)}
+                      {t(field)} ({unit})
                     </label>
                     <input
                       type="text"
                       name={field}
                       value={VitalSigns[field]}
                       onChange={handleVitalChange}
-                      placeholder={t(`Enter ${field}`)}
+                      placeholder={t(`Enter ${field} (${unit})`)}
                       className="w-full mt-2 p-2 border border-gray-300 rounded-lg"
                     />
                   </div>
@@ -431,45 +431,67 @@ const WaitingArea = () => {
               {/* /i want to their two button add his caption LAMA, DAMA/ */}
 
               <div className="flex space-x-4">
-                <button className="bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 px-6 py-2" onClick={() => window.close()}>
-                  Close
-                </button>
+                {/* Save button - enabled after department is assigned */}
                 <button
-                  className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600"
-                  onClick={openBandPopup}
-                >
-                  {t("Print Band")}
-                </button>
-                <button
-                disabled={VitalSigns.BP === ""}
-                  className={`text-white px-6 py-2 rounded-lg hover:bg-blue-600 ${
-                    VitalSigns.BP ? "" : "opacity-50 cursor-not-allowed"
-                  } ${
-                    callPatient
-                      ? "bg-blue-500 hover:bg-blue-600"
-                      : "bg-blue-500 hover:bg-blue-600"
+                  disabled={!patientData?.department}
+                  className={`px-6 py-2 rounded-lg font-semibold ${
+                    patientData?.department
+                      ? "bg-green-500 text-white hover:bg-green-600"
+                      : "bg-gray-400 text-gray-600 cursor-not-allowed opacity-60"
                   }`}
-                  onClick={handleOpen}
-                >
-                  {loading ? <Spinner /> : `${t("Assign")}`}
-                </button>
-                <button
-                  className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600"
                   onClick={handleSave}
                 >
                   {loading ? <Spinner /> : `${t("Save")}`}
                 </button>
+                {/* Print button - enabled after vital signs are saved */}
                 <button
-                  className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600"
+                  disabled={!patientData?.vitalSigns || patientData?.vitalSigns?.length === 0}
+                  className={`px-6 py-2 rounded-lg font-semibold ${
+                    patientData?.vitalSigns && patientData?.vitalSigns?.length > 0
+                      ? "bg-green-500 text-white hover:bg-green-600"
+                      : "bg-gray-400 text-gray-600 cursor-not-allowed opacity-60"
+                  }`}
+                  onClick={openBandPopup}
+                >
+                  {t("Print")}
+                </button>
+                {/* Assign button - always enabled (first step) */}
+                <button
+                  className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-semibold"
+                  onClick={handleOpen}
+                >
+                  {loading ? <Spinner /> : `${t("Assign")}`}
+                </button>
+                {/* Re-Print button - enabled when ticket exists */}
+                <button
+                  disabled={!pdfUrl}
+                  className={`px-6 py-2 rounded-lg font-semibold ${
+                    pdfUrl
+                      ? "bg-blue-500 text-white hover:bg-blue-600"
+                      : "bg-gray-400 text-gray-600 cursor-not-allowed opacity-60"
+                  }`}
                   onClick={openPopup}
                 >
                   {t("Re-Print")}
                 </button>
+                {/* Void button - enabled after department is assigned */}
                 <button
-                  className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600"
+                  disabled={!patientData?.department}
+                  className={`px-6 py-2 rounded-lg font-semibold ${
+                    patientData?.department
+                      ? "bg-red-500 text-white hover:bg-red-600"
+                      : "bg-gray-400 text-gray-600 cursor-not-allowed opacity-60"
+                  }`}
                   onClick={handleVoid}
                 >
                   {t("Void")}
+                </button>
+                {/* Close button - always enabled */}
+                <button 
+                  className="bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 px-6 py-2" 
+                  onClick={() => window.close()}
+                >
+                  Close
                 </button>
               </div>
             </div>

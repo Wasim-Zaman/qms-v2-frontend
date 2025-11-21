@@ -116,7 +116,11 @@ function Beds() {
                         className={`px-3 py-1 rounded-full text-xs font-medium ${
                             bedss.bedStatus === "Available"
                                 ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
+                                : bedss.bedStatus === "Occupied"
+                                ? "bg-red-100 text-red-800"
+                                : bedss.bedStatus === "Under Maintenance"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-gray-100 text-gray-800"
                         }`}
                     >
                         {bedss.bedStatus || ""}

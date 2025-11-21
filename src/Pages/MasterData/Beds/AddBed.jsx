@@ -84,6 +84,7 @@ const AddBed = ({ isVisible, setVisibility, refreshbeds }) => {
               >
                 <option>{t("Available")}</option>
                 <option>{t("Occupied")}</option>
+                <option>{t("Under Maintenance")}</option>
               </select>
             </div>
           </div>

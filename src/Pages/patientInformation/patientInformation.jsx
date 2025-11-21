@@ -60,6 +60,7 @@ const PatientInformation = () => {
   const [bloodGroup, setBloodGroup] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [mrnNumber, setMrnNumber] = useState("");
+  const [searchValue, setSearchValue] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -118,21 +119,23 @@ const PatientInformation = () => {
   };
 
   const searchPatient = async () => {
-    if (!IDNumber && !MobileNumber) {
-      toast.error("Please enter ID Number or Mobile Number to search");
+    if (!searchValue.trim()) {
+      toast.error("Please enter MRN, Mobile Number, or Iqama/Resident Number to search");
       return;
     }
 
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${baseUrl}/api/v1/patients/search?idNumber=${IDNumber}&mobileNumber=${MobileNumber}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
+      const trimmedValue = searchValue.trim();
+      
+      // Build the search URL with only searchKey parameter
+      const searchUrl = `${baseUrl}/api/v1/patients/search?searchKey=${encodeURIComponent(trimmedValue)}`;
+
+      const response = await axios.get(searchUrl, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
 
       if (response.status === 200) {
         const patientData = response.data.data;
@@ -259,20 +262,25 @@ const PatientInformation = () => {
                     t={t}
                   />
                 </div>
-                <div>
+                <div className="col-span-2">
                   <label
-                    htmlFor="idNumber"
+                    htmlFor="searchField"
                     className="text-lg font-medium text-gray-700"
                   >
-                    {t("ID Number")}
+                    {t("Search Patient (MRN / Mobile Number / Iqama/Resident Number)")}
                   </label>
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      id="idNumber"
-                      value={IDNumber}
-                      onChange={(e) => setIDNumber(e.target.value)}
-                      placeholder={t("Enter ID number")}
+                      id="searchField"
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                          searchPatient();
+                        }
+                      }}
+                      placeholder={t("Enter MRN, Mobile Number, or Iqama/Resident Number")}
                       className="w-full mt-2 p-3 border border-green-400 rounded-lg focus:ring-2 focus:ring-green-300"
                     />
                     <button
@@ -287,48 +295,54 @@ const PatientInformation = () => {
                 </div>
                 <div>
                   <label
+                    htmlFor="idNumber"
+                    className="text-lg font-medium text-gray-700"
+                  >
+                    {t("ID Number")}
+                  </label>
+                  <input
+                    type="text"
+                    id="idNumber"
+                    value={IDNumber}
+                    onChange={(e) => setIDNumber(e.target.value)}
+                    placeholder={t("Enter ID number")}
+                    className="w-full mt-2 p-3 border border-green-400 rounded-lg focus:ring-2 focus:ring-green-300"
+                  />
+                </div>
+                <div>
+                  <label
                     htmlFor="mobileNumber"
                     className="text-lg font-medium text-gray-700"
                   >
                     {t("Mobile Number")}
                   </label>
-                  <div className="flex gap-2">
-                    <div className="w-full mt-2">
-                      <PhoneInput
-                        onChange={(e) => setMobileNumber(e)}
-                        value={MobileNumber}
-                        international
-                        country={"sa"}
-                        defaultCountry={"sa"}
-                        inputProps={{
-                          id: "mobileNumber",
-                          placeholder: t("Enter mobile number"),
-                        }}
-                        inputStyle={{
-                          width: "100%",
-                          border: "1px solid #05D899",
-                          borderRadius: "8px",
-                          paddingTop: "10px",
-                          paddingBottom: "10px",
-                          fontSize: "16px",
-                          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                          backgroundColor: "white",
-                          height: "auto",
-                        }}
-                        flagStyle={{
-                          width: "80px",
-                          height: "80px",
-                        }}
-                      />
-                    </div>
-                    <button
-                      onClick={searchPatient}
-                      className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                      </svg>
-                    </button>
+                  <div className="mt-2">
+                    <PhoneInput
+                      onChange={(e) => setMobileNumber(e)}
+                      value={MobileNumber}
+                      international
+                      country={"sa"}
+                      defaultCountry={"sa"}
+                      inputProps={{
+                        id: "mobileNumber",
+                        placeholder: t("Enter mobile number"),
+                      }}
+                      inputStyle={{
+                        width: "100%",
+                        border: "1px solid #05D899",
+                        borderRadius: "8px",
+                        paddingTop: "10px",
+                        paddingBottom: "10px",
+                        fontSize: "16px",
+                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                        backgroundColor: "white",
+                        height: "auto",
+                      }}
+                      flagStyle={{
+                        width: "80px",
+                        height: "80px",
+                      }}
+                    />
                   </div>
                 </div>
                 <div>
@@ -421,7 +435,7 @@ const PatientInformation = () => {
                   <input
                     type="date"
                     id="birthDate"
-                    value={birthDate.split("T")[0]}
+                    value={birthDate ? (birthDate.includes("T") ? birthDate.split("T")[0] : birthDate) : ""}
                     onChange={(e) => setBirthDate(e.target.value)}
                     placeholder={t("Enter birth date")}
                     className="w-full mt-2 p-3 border border-green-400 rounded-lg focus:ring-2 focus:ring-green-300"

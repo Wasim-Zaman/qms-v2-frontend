@@ -54,34 +54,102 @@ const UpdatePatientInformation = () => {
     const [birthDate, setBirthDate] = useState("");
     const [mrnNumber, setMrnNumber] = useState("");
     const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
+    const [searchValue, setSearchValue] = useState("");
+    const [patientId, setPatientId] = useState(null);
     const navigate = useNavigate();
 
-    const fetchPatients = async () => {
+    const searchPatient = async () => {
+        if (!searchValue.trim()) {
+            toast.error("Please enter MRN, Mobile Number, or Iqama/Resident Number to search");
+            return;
+        }
+
+        setLoading(true);
         try {
-            const response = await newRequest.get(`/api/v1/patients/${Id}`);
-            setPatientName(response?.data?.data?.name || "");
-            setNationality(response?.data?.data?.nationality || "");
-            setIDNumber(response?.data?.data?.idNumber || "");
-            setMobileNumber(response?.data?.data?.mobileNumber || "");
-            setStatus(response?.data?.data?.status || "");
-            setAge(response?.data?.data?.age || "");
-            setSex(response?.data?.data?.sex || "");
-            setcheifComplaint(response?.data?.data?.cheifComplaint || "");
-            setBloodGroup(response?.data?.data?.bloodGroup || "");
-            setBirthDate(response?.data?.data?.birthDate || "");
-            setMrnNumber(response?.data?.data?.mrnNumber || "");
+            const trimmedValue = searchValue.trim();
+            
+            // Build the search URL with only searchKey parameter
+            const searchUrl = `${baseUrl}/api/v1/patients/search?searchKey=${encodeURIComponent(trimmedValue)}`;
+
+            const response = await axios.get(searchUrl, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            });
+
+            if (response.status === 200) {
+                const patientData = response.data.data;
+                setPatientId(patientData.id);
+                setPatientName(patientData.name || "");
+                setNationality(patientData.nationality || "Saudi Arabia");
+                setSex(patientData.sex || "");
+                setIDNumber(patientData.idNumber || "");
+                setAge(patientData.age || "");
+                setStatus(patientData.status || "Non-urgent");
+                setMobileNumber(patientData.mobileNumber || "");
+                setcheifComplaint(patientData.cheifComplaint || "");
+                setBloodGroup(patientData.bloodGroup || "");
+                setBirthDate(patientData.birthDate || "");
+                setMrnNumber(patientData.mrnNumber || "");
+                // Update the URL if patientId exists
+                if (patientData.id && !Id) {
+                    navigate(`/update-patient/${patientData.id}`, { replace: true });
+                }
+
+                toast.success(response.data.message || "Patient found!");
+            }
         } catch (error) {
-            console.error("Error fetching patients:", error);
+            setPatientId(null);
+            toast.error(error.response?.data?.message || "Patient not found");
+            setPatientName("");
+            setNationality("Saudi Arabia");
+            setSex("");
+            setAge("");
+            setStatus("");
+            setcheifComplaint("");
+            setBloodGroup("");
+            setBirthDate("");
+            setMrnNumber("");
+            setMobileNumber("");
         } finally {
             setLoading(false);
         }
     };
+
+    const fetchPatients = async () => {
+        if (Id) {
+            try {
+                const response = await newRequest.get(`/api/v1/patients/${Id}`);
+                setPatientId(response?.data?.data?.id || null);
+                setPatientName(response?.data?.data?.name || "");
+                setNationality(response?.data?.data?.nationality || "");
+                setIDNumber(response?.data?.data?.idNumber || "");
+                setMobileNumber(response?.data?.data?.mobileNumber || "");
+                setStatus(response?.data?.data?.status || "");
+                setAge(response?.data?.data?.age || "");
+                setSex(response?.data?.data?.sex || "");
+                setcheifComplaint(response?.data?.data?.cheifComplaint || "");
+                setBloodGroup(response?.data?.data?.bloodGroup || "");
+                setBirthDate(response?.data?.data?.birthDate || "");
+                setMrnNumber(response?.data?.data?.mrnNumber || "");
+            } catch (error) {
+                console.error("Error fetching patients:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
     useEffect(() => {
         fetchPatients()
-    }, [])
+    }, [Id])
 
    const handleSubmit = async (e) => {
      e.preventDefault();
+     if (!patientId && !Id) {
+       toast.error("Please search for a patient first");
+       return;
+     }
+
      setLoading(true);
 
      const patientData = {
@@ -99,8 +167,9 @@ const UpdatePatientInformation = () => {
      };
 
      try {
+       const updateId = Id || patientId;
        const response = await newRequest.put(
-         `/api/v1/patients/${Id}`,
+         `/api/v1/patients/${updateId}`,
          patientData
        );
 
@@ -134,6 +203,63 @@ const UpdatePatientInformation = () => {
      }
    };
 
+   const handleNewPatient = async (e) => {
+     e.preventDefault();
+     setLoading(true);
+
+     const patientData = {
+       name: PatientName,
+       nationality: Nationality,
+       sex: Sex,
+       idNumber: IDNumber,
+       age: Age,
+       mobileNumber: MobileNumber,
+       cheifComplaint: cheifComplaint,
+       status: Status,
+       bloodGroup: bloodGroup,
+       birthDate: birthDate,
+       mrnNumber: mrnNumber,
+     };
+
+     try {
+       const response = await axios.post(`${baseUrl}/api/v2/patients`, patientData,
+         {
+           headers: {
+             "Content-Type": "application/json",
+             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+           },
+         }
+       );
+       if (response.status === 200 || response.status === 201) {
+         const { data } = response.data;
+         setPdfUrl(data.ticket);
+         const pdfResponse = await axios.get(`${baseUrl}/${data.ticket}`, { responseType: 'blob' });
+         const blobUrl = URL.createObjectURL(pdfResponse.data);
+         setPdfBlobUrl(blobUrl);
+         setShowPopup(true);
+         toast.success("Successfully submitted patient data!");
+         // Clear the form after successful submission
+         setPatientId(null);
+         setSearchValue("");
+         setPatientName("");
+         setNationality("Saudi Arabia");
+         setSex("");
+         setIDNumber("");
+         setAge("");
+         setStatus("Non-urgent");
+         setMobileNumber("");
+         setcheifComplaint("");
+         setBloodGroup("");
+         setBirthDate("");
+         setMrnNumber("");
+       }
+     } catch (error) {
+       toast.error(error.response?.data?.message || "Error");
+     } finally {
+       setLoading(false);
+     }
+   };
+
     const closePopup = () => {
         setShowPopup(false);
     };
@@ -156,6 +282,37 @@ const UpdatePatientInformation = () => {
                   Patient Information
                 </h5>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="col-span-2">
+                    <label
+                      htmlFor="searchField"
+                      className="text-lg font-medium text-gray-700"
+                    >
+                      {t("Search Patient (MRN / Mobile Number / Iqama/Resident Number)")}
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        id="searchField"
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter") {
+                            searchPatient();
+                          }
+                        }}
+                        placeholder={t("Enter MRN, Mobile Number, or Iqama/Resident Number")}
+                        className="w-full mt-2 p-3 border border-green-400 rounded-lg focus:ring-2 focus:ring-green-300"
+                      />
+                      <button
+                        onClick={searchPatient}
+                        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
                   <div>
                     <label
                       htmlFor="patientName"
@@ -325,7 +482,7 @@ const UpdatePatientInformation = () => {
                     <input
                       type="date"
                       id="birthDate"
-                      value={birthDate.split("T")[0]}
+                      value={birthDate ? (birthDate.includes("T") ? birthDate.split("T")[0] : birthDate) : ""}
                       onChange={(e) => setBirthDate(e.target.value)}
                       placeholder={t("Enter birth date")}
                       className="w-full mt-2 p-3 border border-green-400 rounded-lg focus:ring-2 focus:ring-green-300"
@@ -371,13 +528,25 @@ const UpdatePatientInformation = () => {
                   >
                     {t("Close")}
                   </button>
-                  <button
-                    onClick={handleSubmit}
-                    type="submit"
-                    className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600"
-                  >
-                    {t("Update Issue Ticket")}
-                  </button>
+                  <div className="flex gap-3">
+                    {patientId || Id ? (
+                      <button
+                        onClick={handleSubmit}
+                        type="button"
+                        className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600"
+                      >
+                        {t("Update Issue Ticket")}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleNewPatient}
+                        type="button"
+                        className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600"
+                      >
+                        {t("Issue Ticket")}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
