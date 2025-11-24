@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import {
   LineChart,
   Line,
@@ -10,11 +9,13 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import newRequest from '../../utils/newRequest';
+import exportToExcel from '../../utils/exportToExcel';
 
 const EyeBall = () => {
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [totalPatientsdata, settotalPatientsdata] = useState("");
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     const fetchChartData = async () => {
@@ -40,11 +41,35 @@ const EyeBall = () => {
     fetchChartData();
   }, []);
 
+  const handleExport = () => {
+    try {
+      setExporting(true);
+      const rows = chartData.map((item) => ({
+        Patient: item.patient,
+        "Time (mins)": item.time,
+      }));
+      exportToExcel(rows, "eyeball-to-triage", "EyeballToTriage");
+    } catch (error) {
+      console.error("Failed to export eyeball data", error);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <div className="bg-green rounded-lg shadow-lg p-6 w-full max-w-5xl">
-      <h2 className="text-2xl font-semibold text-center text-gray-800">
-        Time from Eyeball to TRIAGE
-      </h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-semibold text-gray-800">
+          Time from Eyeball to TRIAGE
+        </h2>
+        <button
+          onClick={handleExport}
+          disabled={exporting || chartData.length === 0}
+          className="px-3 py-1 text-sm font-medium rounded-md bg-green-700 text-white hover:bg-green-800 disabled:opacity-60 disabled:cursor-not-allowed transition"
+        >
+          {exporting ? "Exporting..." : "Export Excel"}
+        </button>
+      </div>
       <div className="h-[400px]">
         {loading ? (
           <p className="text-center text-gray-500">Loading...</p>

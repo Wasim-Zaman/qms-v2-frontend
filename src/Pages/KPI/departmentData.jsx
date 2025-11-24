@@ -8,10 +8,12 @@ import {
     Tooltip,
 } from "recharts";
 import newRequest from "../../utils/newRequest";
+import exportToExcel from "../../utils/exportToExcel";
 
 const DepartmentData = () => {
   const [departmentData, setDepartmentData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,15 +45,39 @@ const DepartmentData = () => {
     fetchData();
   }, []);
 
+  const handleExport = () => {
+    try {
+      setExporting(true);
+      const rows = departmentData.map((department) => ({
+        Department: department.name,
+        "Patient Count": department.value,
+      }));
+      exportToExcel(rows, "clinic-assignment", "ClinicAssignment");
+    } catch (error) {
+      console.error("Failed to export department data", error);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   if (loading) {
     return <p className="text-center text-gray-600">Loading data...</p>;
   }
 
   return (
     <div className="bg-green rounded-lg shadow-lg p-6 w-full max-w-3xl">
-      <h2 className="text-2xl font-semibold text-center text-gray-800">
-        Clinic Assignment
-      </h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-semibold text-gray-800">
+          Clinic Assignment
+        </h2>
+        <button
+          onClick={handleExport}
+          disabled={exporting || departmentData.length === 0}
+          className="px-3 py-1 text-sm font-medium rounded-md bg-green-700 text-white hover:bg-green-800 disabled:opacity-60 disabled:cursor-not-allowed transition"
+        >
+          {exporting ? "Exporting..." : "Export Excel"}
+        </button>
+      </div>
       <div className="h-[450px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>

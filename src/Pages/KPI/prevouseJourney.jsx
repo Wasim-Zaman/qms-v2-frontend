@@ -15,6 +15,7 @@ import { FaSearch } from "react-icons/fa";
 import newRequest from "../../utils/newRequest";
 import PickerFilter from "../PatientJourney2/PickerFilter";
 import PickerSort from "../PatientJourney2/PickerSort";
+import exportToExcel from "../../utils/exportToExcel";
 
 // Utility function to format date-time
 const formatDateTime = (dateString) => {
@@ -39,16 +40,20 @@ const PrevouseJourney = ({ data }) => {
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
   const [filters, setFilters] = useState({});
+  const [exporting, setExporting] = useState(false);
+
+  const buildFilters = () =>
+    Object.entries(filters).reduce((acc, [key, value]) => {
+      if (value !== "" && value !== null && value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
 
   const fetchAllRoles = async () => {
     setLoading(true);
     try {
-      const cleanFilters = Object.entries(filters).reduce((acc, [key, value]) => {
-        if (value !== "" && value !== null && value !== undefined) {
-          acc[key] = value;
-        }
-        return acc;
-      }, {});
+      const cleanFilters = buildFilters();
 
       const response = await newRequest.get("/api/v1/journeys/previous", {
         params: {
@@ -106,10 +111,60 @@ const PrevouseJourney = ({ data }) => {
     }
   };
 
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const cleanFilters = buildFilters();
+      const baseParams = {
+        page: 1,
+        sortBy,
+        order: sortOrder,
+        ...cleanFilters,
+        search: search || undefined,
+      };
+
+      const firstResponse = await newRequest.get("/api/v1/journeys/previous", {
+        params: baseParams,
+      });
+      const journeys = firstResponse?.data?.data?.journeys || [];
+      const paginationData = firstResponse?.data?.data?.pagination || {};
+      const totalPages = paginationData?.totalPages || 1;
+      let allJourneys = [...journeys];
+
+      for (let currentPage = 2; currentPage <= totalPages; currentPage++) {
+        const response = await newRequest.get("/api/v1/journeys/previous", {
+          params: {
+            ...baseParams,
+            page: currentPage,
+          },
+        });
+        allJourneys = allJourneys.concat(response?.data?.data?.journeys || []);
+      }
+
+      const rows = allJourneys.map((journey, index) => ({
+        "#": index + 1,
+        Name: journey?.patient?.name || "",
+        "MRN Number": journey?.patient?.mrnNumber || "",
+        "First Call": formatDateTime(journey?.firstCallTime),
+        Vital: formatDateTime(journey?.vitalTime),
+        "Assign Department": formatDateTime(journey?.assignDeptTime),
+        "Second Call": formatDateTime(journey?.secondCallTime),
+        "Begin Time": formatDateTime(journey?.beginTime),
+        "End Time": formatDateTime(journey?.endTime),
+      }));
+
+      exportToExcel(rows, "previous-patient-journeys", "PreviousJourneys");
+    } catch (error) {
+      console.error("Failed to export previous journeys", error);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const topContent = useMemo(
     () => (
       <div className="flex flex-col gap-4 mt-4">
-        <div className="flex items-center">
+        <div className="flex items-center gap-3 flex-wrap">
           <Input
             isClearable
             value={search}
@@ -137,10 +192,17 @@ const PrevouseJourney = ({ data }) => {
             currentSortBy={sortBy}
             currentSortOrder={sortOrder}
           />
+          <button
+            onClick={handleExport}
+            disabled={exporting}
+            className="ml-auto px-3 py-1 text-sm font-medium rounded-md bg-green-700 text-white hover:bg-green-800 disabled:opacity-60 disabled:cursor-not-allowed transition"
+          >
+            {exporting ? "Exporting..." : "Export Excel"}
+          </button>
         </div>
       </div>
     ),
-    [search]
+    [search, exporting, handleExport]
   );
 
   const bottomContent = useMemo(
