@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import toast from "react-hot-toast";
 import { FaEnvelope, FaEye, FaEyeSlash, FaLock, FaUserCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import logo from "../../Images/logo.png";
+import logo from "../../Images/HD GST LOGO.png";
 import '../../index.css';
 import { baseUrl } from "../../utils/config";
 

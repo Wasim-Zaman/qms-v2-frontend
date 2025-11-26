@@ -8,7 +8,7 @@ import CentralWaitingArea from "../../Images/Central Waiting Area.png";
 import Department from "../../Images/Department.png";
 import KPI from "../../Images/KPI.png";
 import LocationAssignment from "../../Images/Location Assignment.png";
-import logo from "../../Images/logo.png";
+import logo from "../../Images/HD GST LOGO.png";
 import logout from "../../Images/logout.png";
 import MasterData from "../../Images/masterdata.png";
 import PatientJourneyicon from "../../Images/PatientJourneyicon.png";
