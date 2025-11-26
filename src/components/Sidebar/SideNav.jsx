@@ -248,7 +248,11 @@ function SideNav({ children }) {
                 }`}
                 onClick={() => navigate("/Home")}
               >
-                <img src={logo} alt="logo" className="w-12 h-12" />
+                <img
+                  src={logo}
+                  alt="GST logo"
+                  className="w-full max-w-[180px] h-auto object-contain"
+                />
               </div>
               <div
                 className={`transition-opacity duration-300 cursor-pointer ${
@@ -256,7 +260,11 @@ function SideNav({ children }) {
                 }`}
                 onClick={() => navigate("/Home")}
               >
-                <img src={logo} alt="logo" className="w-10 h-10" />
+                <img
+                  src={logo}
+                  alt="GST logo"
+                  className="w-16 h-auto object-contain"
+                />
               </div>
             </div>
 

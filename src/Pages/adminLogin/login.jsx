@@ -70,7 +70,11 @@ const Login = () => {
             {/* Left side - Logo and branding */}
             <div className="hidden lg:flex lg:w-1/2 bg-green-600 flex-col justify-center items-center p-12">
                 <div className="max-w-md text-center">
-                    <img src={logo} alt="Logo" className="w-24 h-24 mx-auto mb-8" />
+                    <img
+                        src={logo}
+                        alt="GST logo"
+                        className="w-full max-w-[220px] h-auto mx-auto mb-8 object-contain"
+                    />
                     <h1 className="text-4xl font-bold text-white mb-6">Queue Management System</h1>
                     <p className="text-green-100 text-lg">
                         Streamline patient flow, reduce waiting times, and enhance the overall 
@@ -84,7 +88,11 @@ const Login = () => {
                 <div className="w-full max-w-md">
                     {/* Logo shown only on mobile */}
                     <div className="lg:hidden flex justify-center mb-8">
-                        <img src={logo} alt="Logo" className="w-16 h-16" />
+                        <img
+                            src={logo}
+                            alt="GST logo"
+                            className="w-24 h-auto object-contain"
+                        />
                     </div>
 
                     <div className="bg-white rounded-xl shadow-lg p-8">
