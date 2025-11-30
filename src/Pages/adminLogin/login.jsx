@@ -32,30 +32,18 @@ const Login = () => {
 
     return (
         <div className="min-h-screen flex bg-gray-50">
-            {/* Left green branding panel */}
-            <div className="hidden lg:flex w-1/2 bg-green-600 items-center justify-center px-10">
-                <div className="text-center text-white max-w-sm space-y-6">
+            {/* Main content area */}
+            <div className="flex-1 flex flex-col items-center py-10 px-4 sm:px-8">
+                {/* Logo at the top */}
+                <div className="mb-8">
                     <img
                         src={logo}
                         alt="GST logo"
-                        className="w-full max-w-[220px] h-auto mx-auto mb-6 object-contain"
+                        className="w-full max-w-[220px] h-auto mx-auto object-contain"
                     />
-                    <div>
-                        <h1 className="text-3xl font-bold leading-tight">
-                            Queue Management
-                            <br />
-                            System
-                        </h1>
-                    </div>
-                    <p className="text-sm leading-relaxed text-green-50">
-                        Integrated solutions for enhanced service delivery and
-                        streamlined experiences for both patients and employees.
-                    </p>
                 </div>
-            </div>
 
-            {/* Right side – cards */}
-            <div className="flex-1 flex flex-col items-center justify-center py-10 px-4 sm:px-8">
+                {/* Cards container */}
                 <div className="w-full max-w-xl space-y-7">
                     {systemCards.map((card) => (
                         <div
